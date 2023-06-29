@@ -1,7 +1,9 @@
 ﻿using AdminToys;
 using CustomCommands.Commands;
+using CustomPlayerEffects;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
+using InventorySystem;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.Attachments;
 using MapGeneration.Distributors;
@@ -19,6 +21,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityStandardAssets.Effects;
+using InventorySystem.Disarming;
+using InventorySystem.Items.ThrowableProjectiles;
+using InventorySystem.Items;
+using Utils;
 
 namespace CustomCommands
 {
@@ -133,6 +140,38 @@ namespace CustomCommands
 			{
 				player.SendBroadcast("You can change your SCP by using the \".scpswap\" command in your console", 6);
 			}
+		}
+
+		[PluginEvent(ServerEventType.Scp173NewObserver)]
+		public bool New173Target(Player player, Player target)
+		{
+			if (target.Role == RoleTypeId.Tutorial)
+			{
+				return false;
+			}
+			else return true;
+		}
+
+		[PluginEvent(ServerEventType.Scp096AddingTarget)]
+		public bool New096Target(Player player, Player target, bool isForLook)
+		{
+			if (target.Role == RoleTypeId.Tutorial)
+				return false;
+			else return true;
+		}
+
+		[PluginEvent(ServerEventType.PlayerCoinFlip)]
+		public void CoinFlip(Player player, bool isTails)
+		{
+			MEC.Timing.CallDelayed(2, () =>
+			{
+				if (!isTails)
+				{
+					ItemBase item = player.CurrentItem;
+					player.ReferenceHub.inventory.ServerRemoveItem(item.ItemSerial, null);
+					ExplosionUtils.ServerExplode(player.ReferenceHub);
+				}
+			});
 		}
 	}
 }

@@ -41,8 +41,10 @@ namespace CustomCommands.Commands
 				Pos.y += 1;
 
 				FlashbangGrenade grenade = (FlashbangGrenade)UnityEngine.Object.Instantiate(item.Projectile, Pos, Quaternion.identity);
-				grenade.NetworkInfo = new InventorySystem.Items.Pickups.PickupSyncInfo(item.ItemTypeId, Pos, Quaternion.identity, item.Weight, item.ItemSerial);
-				grenade.RigidBody.velocity = new Vector3(UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1));
+				grenade.NetworkInfo = new InventorySystem.Items.Pickups.PickupSyncInfo(item.ItemTypeId, item.Weight, item.ItemSerial);
+				grenade.Position = Pos;
+				grenade.Rotation = Quaternion.identity;
+				grenade.GetComponent<Rigidbody>().velocity = new Vector3(UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1));
 
 				grenade.PreviousOwner = new Footprinting.Footprint(plr.ReferenceHub);
 				Mirror.NetworkServer.Spawn(grenade.gameObject);

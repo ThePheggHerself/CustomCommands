@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\References\SCPSL\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\..\References\SCPSL\Assembly-CSharp-firstpass.dll</HintPath>
@@ -41,8 +41,12 @@
     <Reference Include="CommandSystem.Core">
       <HintPath>..\..\References\SCPSL\CommandSystem.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Mirror">
+    <Reference Include="Mirror, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References\SCPSL\Mirror.dll</HintPath>
+    </Reference>
+    <Reference Include="Mirror.Components">
+      <HintPath>..\..\References\SCPSL\Mirror.Components.dll</HintPath>
     </Reference>
     <Reference Include="NWAPIPermissionSystem">
       <HintPath>..\..\References\SCPSL\NWAPIPermissionSystem.dll</HintPath>
@@ -82,6 +86,7 @@
     <Compile Include="Commands\Drop.cs" />
     <Compile Include="Commands\Pocket.cs" />
     <Compile Include="Commands\SCPSwap.cs" />
+    <Compile Include="Commands\Size.cs" />
     <Compile Include="Commands\Test.cs" />
     <Compile Include="Commands\Tower2.cs" />
     <Compile Include="Events.cs" />

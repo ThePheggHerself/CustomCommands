@@ -1,4 +1,5 @@
 ﻿using CommandSystem;
+using Mirror;
 using NWAPIPermissionSystem;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;

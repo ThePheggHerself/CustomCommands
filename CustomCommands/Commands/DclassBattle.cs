@@ -42,7 +42,7 @@ namespace CustomCommands.Commands
 			if (!Extensions.CanRun(sender, PlayerPermissions.PlayersManagement, arguments, Usage, out response))
 				return false;
 
-			Plugin.EventInProgress = true;
+			Plugin.CurrentEvent = EventType.Battle;
 			Round.IsLocked = true;
 
 			var room = RoomIdentifier.AllRoomIdentifiers.Where(r => r.Name == RoomName.Lcz914);

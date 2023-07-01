@@ -1,8 +1,13 @@
 ﻿using CommandSystem;
+using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using InventorySystem.Items.Firearms;
 using MapGeneration;
+using PlayerRoles;
+using PlayerRoles.FirstPersonControl;
+using PlayerRoles.FirstPersonControl.Spawnpoints;
 using PlayerRoles.PlayableScps.Scp049;
+using PlayerRoles.PlayableScps.Scp173;
 using PluginAPI.Core;
 using PluginAPI.Core.Zones;
 using System;
@@ -11,11 +16,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 using FacilityZone = MapGeneration.FacilityZone;
 
 namespace CustomCommands.Commands
 {
-	//[CommandHandler(typeof(RemoteAdminCommandHandler))]
+	[CommandHandler(typeof(RemoteAdminCommandHandler))]
 	public class HushEventCommand : ICommand, IUsageProvider
 	{
 		public string Command => "hush";
@@ -31,53 +37,75 @@ namespace CustomCommands.Commands
 			if (!Extensions.CanRun(sender, PlayerPermissions.PlayersManagement, arguments, Usage, out response))
 				return false;
 
-			Plugin.EventInProgress = true;
+			Plugin.CurrentEvent = EventType.Hush;
 			Round.IsLocked = true;
 
-			var spawn939 = RoomIdentifier.AllRoomIdentifiers.Where(r => r.Name == RoomName.HczArmory).First();
-			var HczRooms = RoomIdentifier.AllRoomIdentifiers.Where(r => r.Name == RoomName.HczServers || r.Name == RoomName.HczMicroHID || r.Name == RoomName.Hcz939).ToList();
-			int toSpawn939 = Mathf.Clamp(Player.Count / 8, 1, 4);
+            var room = RoomIdentifier.AllRoomIdentifiers.Where(r => r.Name == RoomName.Hcz049);
+            var room049 = room.First();
 
-			Facility.TurnOffAllLights(10000);
+            room = RoomIdentifier.AllRoomIdentifiers.Where(r => r.Name == RoomName.Hcz939);
+            var room939 = room.First();
+
+            foreach (var door in DoorVariant.DoorsByRoom[room049])
+            {
+				if (door is PryableDoor pryable)
+					pryable.ServerChangeLock(DoorLockReason.AdminCommand, true);
+            }
+
+            PlayerRoleLoader.TryGetRoleTemplate(RoleTypeId.Scp049, out PlayerRoleBase role);
+            (role as IFpcRole).SpawnpointHandler.TryGetSpawnpoint(out Vector3 spawn939, out float rot);
+
+            int scps = Mathf.Clamp((int)Math.Floor((double)(Player.Count / 7)), 1, 4);
+            int remainingPlayers = Player.GetPlayers().Count - 1;
+            var rand = new System.Random();
+
+            Facility.TurnOffAllLights(10000);
 
 			foreach (Player plr in Player.GetPlayers())
 			{
 				if (plr.IsServer || plr.Role == PlayerRoles.RoleTypeId.Overwatch)
 					continue;
 
-				if ((toSpawn939 > 0 && UnityEngine.Random.Range(0, 2) == 1) || !(toSpawn939 < Player.Count))
+                if ((scps > 0 && rand.Next(0, 2) == 1) || remainingPlayers < scps)
 				{
-					plr.SetRole(PlayerRoles.RoleTypeId.Scp939, PlayerRoles.RoleChangeReason.RemoteAdmin);
-					plr.Position = new Vector3(spawn939.ApiRoom.Position.x, spawn939.ApiRoom.Position.y + 1, spawn939.ApiRoom.Position.z);
+					plr.SetRole(RoleTypeId.Scp939);
+					plr.Position = spawn939;
 
-					plr.ReceiveHint("Hunt and kill the humans", 8);
-					toSpawn939--;
-				}
-				else
+					plr.SendBroadcast("Kill all the humans. The door will open in 10 seconds", 10, shouldClearPrevious: true);
+                    scps--;
+                }
+                else
 				{
-					plr.SetRole(PlayerRoles.RoleTypeId.Scientist, PlayerRoles.RoleChangeReason.RemoteAdmin);
-					var room = HczRooms[UnityEngine.Random.Range(0, HczRooms.Count - 1)];
-					plr.Position = new Vector3(room.ApiRoom.Position.x, room.ApiRoom.Position.y + 1, room.ApiRoom.Position.z);
+                    plr.ReferenceHub.roleManager.ServerSetRole(RoleTypeId.Scientist, RoleChangeReason.RemoteAdmin, RoleSpawnFlags.None);
+                    plr.Position = new Vector3(room939.ApiRoom.Position.x, room939.ApiRoom.Position.y + 1, room939.ApiRoom.Position.z);
 
 					plr.AddItem(ItemType.KeycardNTFCommander);
 					var itemBase = plr.AddItem(ItemType.Flashlight);
 
-					plr.ReferenceHub.inventory.ServerSelectItem(itemBase.ItemSerial);
-					plr.ReferenceHub.inventory.CmdSelectItem(itemBase.ItemSerial);
+                    plr.SendBroadcast("Enable all the generators. The SCPs will be released in 10 seconds", 10, shouldClearPrevious: true);
 
-					plr.ReceiveHint("Survive and enable the generators", 8);
-				}
+					remainingPlayers--;
+                }
 			}
 
 			Round.IsLocked = false;
 
-			foreach (var door in DoorVariant.DoorsByRoom[spawn939])
-			{
-				if (door.RequiredPermissions.RequiredPermissions != Interactables.Interobjects.DoorUtils.KeycardPermissions.None)
-					(door as IDamageableDoor).ServerDamage(10000, DoorDamageType.ServerCommand);
-			}
+            MEC.Timing.CallDelayed(10, () =>
+            {
+                foreach (var door in DoorVariant.DoorsByRoom[room049])
+                {
+                    if (door is PryableDoor pryable)
+                        pryable.NetworkTargetState = true;
+                }
+            });
 
-			response = $"Hush event has begun";
+            MEC.Timing.CallDelayed(60 * 7, () =>
+            {
+                if (Plugin.EventInProgress && Plugin.CurrentEvent == EventType.Hush && Round.IsRoundStarted)
+                    Warhead.Detonate();
+            });
+
+            response = $"Hush event has begun";
 			return true;
 		}
 	}

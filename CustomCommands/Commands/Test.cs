@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace CustomCommands.Commands
 {
@@ -30,6 +31,11 @@ namespace CustomCommands.Commands
 			bool canRun = Extensions.CanRun(arguments, Usage, out response);
 			if (!canRun)
 				return false;
+
+			//foreach(var a in Map.Rooms)
+			//{
+			//	a.ApiRoom.Lights.LightColor = Color.yellow;
+			//}
 
 			//if(sender is PlayerCommandSender pSender)
 			//{

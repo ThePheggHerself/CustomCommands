@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Mirror;
 
 namespace CustomCommands.Commands
 {
@@ -46,7 +47,7 @@ namespace CustomCommands.Commands
 				grenade.GetComponent<Rigidbody>().velocity = new Vector3(UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1));
 
 				grenade.PreviousOwner = new Footprinting.Footprint(plr.ReferenceHub);
-				Mirror.NetworkServer.Spawn(grenade.gameObject);
+				NetworkServer.Spawn(grenade.gameObject);
 				grenade.ServerActivate();
 			}
 

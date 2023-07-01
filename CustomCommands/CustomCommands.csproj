@@ -54,6 +54,10 @@
     <Reference Include="PluginAPI, Version=12.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\Northwood.PluginAPI.12.0.0\lib\net48\PluginAPI.dll</HintPath>
     </Reference>
+    <Reference Include="Pooling, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\SCPSL\Pooling.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -78,6 +82,7 @@
   <ItemGroup>
     <Compile Include="Commands\DclassBattle.cs" />
     <Compile Include="Commands\Hush.cs" />
+    <Compile Include="Commands\Infection.cs" />
     <Compile Include="Commands\PlayerDestroy.cs" />
     <Compile Include="Commands\PlayerLock.cs" />
     <Compile Include="Commands\Flash.cs" />
@@ -89,10 +94,12 @@
     <Compile Include="Commands\Size.cs" />
     <Compile Include="Commands\Test.cs" />
     <Compile Include="Commands\Tower2.cs" />
+    <Compile Include="Fixes.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Misc\IPermissionRequirement.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="PreviousEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

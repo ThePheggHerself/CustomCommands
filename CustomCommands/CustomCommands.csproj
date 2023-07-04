@@ -101,7 +101,6 @@
     <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Misc\IPermissionRequirement.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="PreviousEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

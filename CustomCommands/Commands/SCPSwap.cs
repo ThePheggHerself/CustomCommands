@@ -27,7 +27,7 @@ namespace CustomCommands.Commands
 				return false;
 			}
 
-			if (sender is PlayerCommandSender pSender && pSender.ReferenceHub.IsSCP())
+			if (sender is PlayerCommandSender pSender && pSender.ReferenceHub.IsSCP() && pSender.ReferenceHub.roleManager.CurrentRole.RoleTypeId != RoleTypeId.Scp0492)
 			{
 				var player = Player.Get(pSender.ReferenceHub);
 

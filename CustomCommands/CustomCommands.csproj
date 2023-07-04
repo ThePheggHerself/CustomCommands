@@ -51,8 +51,8 @@
     <Reference Include="NWAPIPermissionSystem">
       <HintPath>..\..\References\SCPSL\NWAPIPermissionSystem.dll</HintPath>
     </Reference>
-    <Reference Include="PluginAPI, Version=12.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\Northwood.PluginAPI.12.0.0\lib\net48\PluginAPI.dll</HintPath>
+    <Reference Include="PluginAPI, Version=13.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\Northwood.PluginAPI.13.1.0\lib\net48\PluginAPI.dll</HintPath>
     </Reference>
     <Reference Include="Pooling, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -80,9 +80,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\BanCheck.cs" />
     <Compile Include="Commands\DclassBattle.cs" />
     <Compile Include="Commands\Hush.cs" />
     <Compile Include="Commands\Infection.cs" />
+    <Compile Include="Commands\MuteCheck.cs" />
     <Compile Include="Commands\PlayerDestroy.cs" />
     <Compile Include="Commands\PlayerLock.cs" />
     <Compile Include="Commands\Flash.cs" />

@@ -13,22 +13,24 @@ using PlayerStatsSystem;
 using InventorySystem.Items.Firearms.Attachments;
 using Mirror;
 using UnityEngine;
+using PluginAPI.Events;
+using CustomPlayerEffects;
 
 namespace CustomCommands
 {
     public class Fixes
     {
         [PluginEvent(ServerEventType.PlayerJoined)]
-        public void PlayerJoin(Player player)
+        public void PlayerJoin(PlayerJoinedEvent args)
         {
             if (!Plugin.EventInProgress && Round.IsRoundStarted && Round.Duration.TotalSeconds < 30)
-                player.SetRole(RoleTypeId.ClassD, RoleChangeReason.LateJoin);
+                args.Player.SetRole(RoleTypeId.ClassD, RoleChangeReason.LateJoin);
         }
 
         [PluginEvent(ServerEventType.Scp173NewObserver)]
-        public bool New173Target(Player player, Player target)
+        public bool New173Target(Scp173NewObserverEvent args)
         {
-            if (target.Role == RoleTypeId.Tutorial)
+            if (args.Target.Role == RoleTypeId.Tutorial)
             {
                 return false;
             }
@@ -36,41 +38,67 @@ namespace CustomCommands
         }
 
         [PluginEvent(ServerEventType.Scp096AddingTarget)]
-        public bool New096Target(Player player, Player target, bool isForLook)
+        public bool New096Target(Scp096AddingTargetEvent args)
         {
-            if (target.Role == RoleTypeId.Tutorial)
+            if (args.Target.Role == RoleTypeId.Tutorial)
                 return false;
             else return true;
         }
 
         [PluginEvent(ServerEventType.PlayerSpawn)]
-        public void PlayerSpawn(Player player, RoleTypeId role)
+        public void PlayerSpawn(PlayerSpawnEvent args)
         {
-            if (player.IsSCP && Round.Duration < TimeSpan.FromMinutes(1) && !Plugin.EventInProgress)
+            if (args.Player.IsSCP && Round.Duration < TimeSpan.FromMinutes(1) && !Plugin.EventInProgress)
             {
-                player.SendBroadcast("You can change your SCP by using the \".scpswap\" command in your console", 6);
+                args.Player.SendBroadcast("You can change your SCP by using the \".scpswap\" command in your console", 6);
             }
         }
 
         [PluginEvent(ServerEventType.PlayerDamagedShootingTarget)]
-        public void TargetDamagedEvent(Player attacker, ShootingTarget target, DamageHandlerBase damageHandler, float amount)
+        public void TargetDamagedEvent(PlayerDamagedShootingTargetEvent args)
         {
-            if (attacker.CurrentItem is Firearm firearm)
+            if (args.Player.CurrentItem is Firearm firearm)
             {
                 Log.Info($"{firearm.GetCurrentAttachmentsCode()}");
             }
+        }
 
+        [PluginEvent(ServerEventType.PlayerDamage)]
+        public bool PlayerDamage(PlayerDamageEvent args)
+        {
+            if (args.Target.Role == RoleTypeId.Tutorial)
+            {
+                return false;
+            }
+            else return true;
+        }
+
+        [PluginEvent(ServerEventType.PlayerHandcuff)]
+        public bool OnDisarm(PlayerHandcuffEvent args)
+        {
+            if (args.Target.Role == RoleTypeId.Tutorial)
+                return false;
+            else
+                return true;
         }
 
         //[PluginEvent(ServerEventType.WaitingForPlayers)]
         public void WaitingForPlayers()
         {
-            foreach (var a in NetworkClient.prefabs)
-            {
-                Log.Info(a.Value.name);
-            }
+			foreach (var room in RoomLightController.Instances)
+			{
+				room.NetworkOverrideColor = new UnityEngine.Color(0.4f, 0.4f, 0.4f);
+			}
 
-            var lightPrefab = NetworkClient.prefabs.Where(r => r.Value.name == "LightSourceToy").First();
+
+
+
+			//foreach (var a in NetworkClient.prefabs)
+			//{
+			//    Log.Info(a.Value.name);
+			//}
+
+			var lightPrefab = NetworkClient.prefabs.Where(r => r.Value.name == "LightSourceToy").First();
 
             var lightGO = GameObject.Instantiate(lightPrefab.Value);
             lightGO.transform.position = new UnityEngine.Vector3(135, 995, -50);
@@ -107,5 +135,6 @@ namespace CustomCommands
             lightGO.GetComponent<Light>().intensity = 100;
             NetworkServer.Spawn(lightGO);
         }
+
     }
 }

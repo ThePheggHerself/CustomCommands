@@ -1,216 +1,189 @@
-﻿using AdminToys;
-using CustomCommands.Commands;
-using CustomPlayerEffects;
-using Interactables.Interobjects;
+﻿using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
-using InventorySystem;
-using InventorySystem.Items.Firearms;
-using InventorySystem.Items.Firearms.Attachments;
 using MapGeneration.Distributors;
-using Mirror;
 using PlayerRoles;
-using PlayerRoles.FirstPersonControl;
 using PlayerStatsSystem;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
-using Scp914;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using UnityStandardAssets.Effects;
-using InventorySystem.Disarming;
-using InventorySystem.Items.ThrowableProjectiles;
+using PluginAPI.Events;
 using InventorySystem.Items;
+using InventorySystem;
 using Utils;
-using Footprinting;
-using InventorySystem.Items.Pickups;
-using MapGeneration;
-using Respawning;
 
 namespace CustomCommands
 {
-    public class Events
-    {
-        public List<Scp079Generator> generators = new List<Scp079Generator>();
+	public class Events
+	{
+		public List<Scp079Generator> generators = new List<Scp079Generator>();
 
+		[PluginEvent(ServerEventType.RoundRestart)]
+		public void OnRoundRestart()
+		{
+			Plugin.CurrentEvent = EventType.NONE;
 
+			generators.Clear();
+		}
 
+		[PluginEvent(ServerEventType.TeamRespawn)]
+		public bool RespawningEvent(TeamRespawnEvent args)
+		{
+			if (Plugin.EventInProgress)
+				return false;
+			else return true;
+		}
 
+		[PluginEvent(ServerEventType.PlayerInteractDoor)]
+		public bool OnPlayerDoorInteract(PlayerInteractDoorEvent args)
+		{
+			if (Plugin.EventInProgress)
+			{
+				if (args.Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
+					return true;
+				else return false;
+			}
+			else
+			{
+				if(args.Player.TemporaryData.Contains("plock") && args.Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
+				{
+					args.Door.ServerChangeLock(DoorLockReason.AdminCommand, true);
+					args.Door.UnlockLater(1, DoorLockReason.AdminCommand);
 
+					args.CanOpen = false;
+					return false;
+				}
+				else if (args.Player.TemporaryData.Contains("pdest") && args.Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
+				{
+					if (args.Door is IDamageableDoor dmgDoor && args.Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
+					{
+						dmgDoor.ServerDamage(10000, DoorDamageType.ServerCommand);
 
+						args.CanOpen = false;
+						return false;
+					}
+				}
 
-        [PluginEvent(ServerEventType.RoundRestart)]
-        public void OnRoundRestart()
-        {
-            Plugin.CurrentEvent = EventType.NONE;
-            PlayerLockCommand.ToggledPlayers.Clear();
-            PlayerDestroyCommand.ToggledPlayers.Clear();
+				return args.CanOpen;
+			}
+		}
 
-            generators.Clear();
-        }
+		[PluginEvent(ServerEventType.GeneratorActivated)]
+		public void GeneratorActivated(GeneratorActivatedEvent args)
+		{
+			if (Plugin.EventInProgress)
+			{
+				if (Plugin.CurrentEvent == EventType.Hush)
+				{
+					generators.Add(args.Generator);
 
-        [PluginEvent(ServerEventType.TeamRespawn)]
-        public bool RespawningEvent(SpawnableTeamType team)
-        {
-            if (Plugin.EventInProgress)
-                return false;
-            else return true;
-        }
+					if (generators.Count == 3)
+					{
+						var plrs = Player.GetPlayers().Where(r => r.Role == RoleTypeId.Scp939);
+						foreach (var plr in plrs)
+						{
+							plr.Kill();
+						}
 
-        [PluginEvent(ServerEventType.PlayerInteractDoor)]
-        public bool OnPlayerDoorInteract(Player Player, DoorVariant Door, bool canOpen)
-        {
-            if (Plugin.EventInProgress)
-            {
-                if (Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
-                    return true;
-                else return false;
-            }
-            else
-            {
-                if (PlayerLockCommand.ToggledPlayers.Contains(Player.PlayerId) && Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
-                {
-                    Door.ServerChangeLock(DoorLockReason.AdminCommand, true);
-                    Door.UnlockLater(1, DoorLockReason.AdminCommand);
+						Round.End();
+					}
+				}
+			}
+		}
 
-                    canOpen = false;
-                    return false;
-                }
-                else if (PlayerDestroyCommand.ToggledPlayers.Contains(Player.PlayerId))
-                {
-                    if (Door is IDamageableDoor dmgDoor && Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
-                    {
-                        dmgDoor.ServerDamage(10000, DoorDamageType.ServerCommand);
+		[PluginEvent(ServerEventType.PlayerDeactivatedGenerator)]
+		public void GeneratorDeactivated(PlayerDeactivatedGeneratorEvent args)
+		{
+			if (Plugin.EventInProgress)
+			{
+				if (Plugin.CurrentEvent == EventType.Hush)
+				{
+					if (args.Player.IsSCP)
+					{
+						args.Player.Damage(100, "Generator Disabled");
+					}
+					else
+					{
+						args.Player.Damage(50, "Do not disable the generators");
+					}
+				}
+			}
+		}
 
-                        canOpen = false;
-                        return false;
-                    }
-                }
+		[PluginEvent(ServerEventType.Scp914Activate)]
+		public bool SCP914Activate(Scp914ActivateEvent args)
+		{
+			if (Plugin.EventInProgress)
+				return false;
+			else return true;
+		}
 
-                return canOpen;
-            }
-        }
+		[PluginEvent(ServerEventType.PlayerThrowItem)]
+		public bool ThrowItem(PlayerThrowItemEvent args)
+		{
+			if (Plugin.EventInProgress)
+			{
+				if (Plugin.CurrentEvent == EventType.Hush)
+					return false;
+				else return true;
+			}
+			return true;
+		}
 
-        [PluginEvent(ServerEventType.GeneratorActivated)]
-        public void GeneratorActivated(Scp079Generator generator)
-        {
-            if (Plugin.EventInProgress)
-            {
-                if (Plugin.CurrentEvent == EventType.Hush)
-                {
-                    generators.Add(generator);
+		[PluginEvent(ServerEventType.PlayerInteractElevator)]
+		public bool PlayerInteractElevator(PlayerInteractElevatorEvent args)
+		{
+			if (Plugin.EventInProgress)
+			{
+				if (Plugin.CurrentEvent == EventType.Hush)
+				{
+					if (args.Elevator.AssignedGroup == ElevatorManager.ElevatorGroup.Nuke)
+						return true;
 
-                    if (generators.Count == 3)
-                    {
-                        var plrs = Player.GetPlayers().Where(r => r.Role == RoleTypeId.Scp939);
-                        foreach (var plr in plrs)
-                        {
-                            plr.Kill();
-                        }
+					else if (args.Elevator.AssignedGroup == ElevatorManager.ElevatorGroup.Scp049 && args.Player.Role == RoleTypeId.Scp939)
+						return true;
 
-                        Round.End();
-                    }
-                }
-            }
-        }
+					else return false;
+				}
+				else return false;
+			}
+			else
+			{
+				if (args.Player.TemporaryData.Contains("plock"))
+				{
+					return false;
+				}
 
-        [PluginEvent(ServerEventType.PlayerDeactivatedGenerator)]
-        public void GeneratorDeactivated(Player player, Scp079Generator generator)
-        {
-            if (Plugin.EventInProgress)
-            {
-                if (Plugin.CurrentEvent == EventType.Hush)
-                {
-                    if (player.IsSCP)
-                    {
-                        player.Damage(100, "Generator Disabled");
-                    }
-                    else
-                    {
-                        player.Damage(50, "Do not disable the generators");
-                    }
-                }
-            }
-        }
+				return true;
+			}
+		}
 
-        [PluginEvent(ServerEventType.Scp914Activate)]
-        public bool SCP914Activate(Player Player, Scp914KnobSetting Setting)
-        {
-            if (Plugin.EventInProgress)
-                return false;
-            else return true;
-        }
+		[PluginEvent(ServerEventType.PlayerDying), PluginPriority(LoadPriority.Highest)]
+		public bool PlayerDeath(PlayerDyingEvent args)
+		{
+			if (Plugin.CurrentEvent == EventType.Infection && args.DamageHandler is AttackerDamageHandler aDH)
+			{
+				args.Player.ReferenceHub.roleManager.ServerSetRole(args.Attacker.Role, RoleChangeReason.RemoteAdmin, RoleSpawnFlags.AssignInventory);
 
-        [PluginEvent(ServerEventType.PlayerThrowItem)]
-        public bool ThrowItem(Player player, ItemBase item, Rigidbody rigidbody)
-        {
-            if (Plugin.EventInProgress)
-            {
-                if (Plugin.CurrentEvent == EventType.Hush)
-                    return false;
-                else return true;
-            }
-            return true;
-        }
+				return false;
+			}
+			return true;
+		}
 
-        [PluginEvent(ServerEventType.PlayerInteractElevator)]
-        public bool PlayerInteractElevator(Player Player, ElevatorChamber Elevator)
-        {
-            if (Plugin.EventInProgress)
-            {
-                if (Plugin.CurrentEvent == EventType.Hush)
-                {
-                    if (Elevator.AssignedGroup == ElevatorManager.ElevatorGroup.Nuke)
-                        return true;
-
-                    else if (Elevator.AssignedGroup == ElevatorManager.ElevatorGroup.Scp049 && Player.Role == RoleTypeId.Scp939)
-                        return true;
-
-                    else return false;
-                }
-                else return false;
-            }
-            else
-            {
-                if (PlayerLockCommand.ToggledPlayers.Contains(Player.PlayerId))
-                {
-                    return false;
-                }
-
-                return true;
-            }
-        }
-
-        [PluginEvent(ServerEventType.PlayerDying), PluginPriority(LoadPriority.Highest)]
-        public bool PlayerDeath(Player target, Player attacker, DamageHandlerBase damageHandler)
-        {
-            if (Plugin.CurrentEvent == EventType.Infection && damageHandler is AttackerDamageHandler aDH)
-            {
-                target.ReferenceHub.roleManager.ServerSetRole(attacker.Role, RoleChangeReason.RemoteAdmin, RoleSpawnFlags.AssignInventory);
-
-                return false;
-            }
-
-            return true;
-        }
-       
-
-        [PluginEvent(ServerEventType.PlayerHandcuff)]
-        public void OnDisarm(Player player, Player target)
-        {
-            if (!target.IsDisarmed)
-            {
-                //target.ReceiveHint("RUN!", 5);
-                target.EffectsManager.EnableEffect<MovementBoost>(5);
-                target.EffectsManager.GetEffect<MovementBoost>().Intensity = 255;
-
-                target.EffectsManager.EnableEffect<DamageReduction>(5);
-                target.EffectsManager.GetEffect<DamageReduction>().Intensity = 190;
-            }
-        }
-    }
+		[PluginEvent(ServerEventType.PlayerCoinFlip)]
+		public void CoinFlip(PlayerCoinFlipEvent args)
+		{
+			if (args.Player.Role == RoleTypeId.Tutorial)
+			{
+				MEC.Timing.CallDelayed(2, () =>
+				{
+					if (!args.IsTails)
+					{
+						ExplosionUtils.ServerExplode(args.Player.ReferenceHub);
+					}
+				});
+			}
+		}
+	}
 }

@@ -16,8 +16,6 @@ namespace CustomCommands.Commands
 	[CommandHandler(typeof(RemoteAdminCommandHandler))]
 	public class PlayerDestroyCommand : ICommand, IUsageProvider
 	{
-		public static List<int> ToggledPlayers = new List<int>();
-
 		public string Command => "playerdestroy";
 
 		public string[] Aliases => null;
@@ -28,22 +26,21 @@ namespace CustomCommands.Commands
 
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			if (!Extensions.CanRun(sender, PlayerPermissions.PermissionsManagement, arguments, Usage, out response, out List<Player> Plrs))
-				return false;
+            if (!Extensions.CanRun(sender, PlayerPermissions.PermissionsManagement, arguments, Usage, out response, out List<Player> Plrs))
+                return false;
 
-			if (Plrs.Count > 1)
-			{
-				response = $"Only 1 player can be selected";
-				return true;
-			}
+            foreach (var plr in Plrs)
+            {
+                if (plr.TemporaryData.Contains("pdest"))
+                {
+                    plr.TemporaryData.Remove("pdest");
+                }
+                else
+                    plr.TemporaryData.Add("pdest", string.Empty);
+            }
 
-			if (ToggledPlayers.Contains(Plrs[0].PlayerId))
-				ToggledPlayers.Remove(Plrs[0].PlayerId);
-			else
-				ToggledPlayers.Add(Plrs[0].PlayerId);
-
-			response = $"Doors {(ToggledPlayers.Contains(Plrs[0].PlayerId) ? "will" : "will no longer")} be destroyed when {Plrs[0].Nickname} interacts with them.";
-			return true;
-		}
+            response = $"Playerdestroy toggled for {Plrs.Count} {(Plrs.Count != 1 ? "players" : "player")}.";
+            return true;
+        }
 	}
 }

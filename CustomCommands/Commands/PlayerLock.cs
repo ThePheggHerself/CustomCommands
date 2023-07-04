@@ -16,8 +16,6 @@ namespace CustomCommands.Commands
 	[CommandHandler(typeof(RemoteAdminCommandHandler))]
 	public class PlayerLockCommand : ICommand, IUsageProvider
 	{
-		public static List<int> ToggledPlayers = new List<int>();
-
 		public string Command => "playerlock";
 
 		public string[] Aliases => null;
@@ -31,18 +29,17 @@ namespace CustomCommands.Commands
 			if (!Extensions.CanRun(sender, PlayerPermissions.PlayersManagement, arguments, Usage, out response, out List<Player> Plrs))
 				return false;
 
-			if (Plrs.Count > 1)
+			foreach(var plr in Plrs)
 			{
-				response = $"Only 1 player can be selected";
-				return true;
+				if (plr.TemporaryData.Contains("plock"))
+				{
+					plr.TemporaryData.Remove("plock");
+				}
+				else
+					plr.TemporaryData.Add("plock", string.Empty);
 			}
 
-			if (ToggledPlayers.Contains(Plrs[0].PlayerId))
-				ToggledPlayers.Remove(Plrs[0].PlayerId);
-			else
-				ToggledPlayers.Add(Plrs[0].PlayerId);
-
-			response = $"Doors {(ToggledPlayers.Contains(Plrs[0].PlayerId) ? "will" : "will no longer")} temporarily lock when {Plrs[0].Nickname} interacts with them.";
+			response = $"Playerlock toggled for {Plrs.Count} {(Plrs.Count != 1 ? "players" :"player")}.";
 			return true;
 		}
 	}

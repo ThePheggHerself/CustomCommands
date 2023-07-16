@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace CustomCommands.Commands
 {
 	[CommandHandler(typeof(ClientCommandHandler))]
-	public class SCPSwap : ICommand, IUsageProvider
+	public class SCPSwap : ICustomCommand
 	{
 		public string Command => "scpswap";
 
@@ -20,13 +20,14 @@ namespace CustomCommands.Commands
 
 		public string[] Usage { get; } = { "scp" };
 
+		public PlayerPermissions? Permission => null;
+
+		public string PermissionString => string.Empty;
+
+		public bool RequirePlayerSender => true;
+
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			if (!Extensions.CanRun(arguments, Usage, out response))
-			{
-				return false;
-			}
-
 			if (sender is PlayerCommandSender pSender && pSender.ReferenceHub.IsSCP() && pSender.ReferenceHub.roleManager.CurrentRole.RoleTypeId != RoleTypeId.Scp0492)
 			{
 				var player = Player.Get(pSender.ReferenceHub);
@@ -55,41 +56,6 @@ namespace CustomCommands.Commands
 					response = "There is already a player playing as that SCP";
 					return false;
 				}
-			}
-
-			response = "You must be an SCP to run this command";
-			return false;
-		}
-	}
-
-	[CommandHandler(typeof(ClientCommandHandler))]
-	public class SCPList : ICommand
-	{
-		public string Command => "scplist";
-
-		public string[] Aliases { get; } = { "slist" };
-		public string Description => "Lists all current SCPs";
-
-		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
-		{
-			if (sender is PlayerCommandSender pSender && pSender.ReferenceHub.IsSCP())
-			{
-				var scps = Player.GetPlayers().Where(r => r.IsSCP);
-
-				if (!scps.Any())
-				{
-					response = "There are no other SCPs";
-					return false;
-				}
-
-				List<string> scpString = new List<string>();
-				foreach(var a in scps)
-				{
-					scpString.Add(a.Role.ToString().ToLower().Replace("scp", string.Empty));
-				}
-
-				response = $"Current SCPs: {string.Join(", ", scpString)}";
-				return true;
 			}
 
 			response = "You must be an SCP to run this command";

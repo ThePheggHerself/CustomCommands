@@ -2,143 +2,67 @@
 using NWAPIPermissionSystem;
 using PlayerRoles;
 using PluginAPI.Core;
+using RemoteAdmin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 
 namespace CustomCommands
 {
 	public static class Extensions
 	{
-		public static bool CanRun(ArraySegment<string> arg, string[] expectedArgs, out string response)
+		public static bool CanRun(this ICommandSender sender, ICustomCommand cmd, ArraySegment<string> args, out string Response, out List<Player> Players, out PlayerCommandSender pSender)
 		{
-			if (arg.Count < expectedArgs.Length)
+			Players = new List<Player>();
+			pSender = null;
+			if (cmd.RequirePlayerSender && !(sender is PlayerCommandSender pS))
 			{
-				response = $"Missing argument: {expectedArgs[arg.Count]}";
+				Response = "You must be a player to run this command";
 				return false;
 			}
 
-			response = string.Empty;
+			if (cmd.Permission != null && !sender.CheckPermission((PlayerPermissions)cmd.Permission))
+			{
+				Response = $"You do not have the required permission to execute this command: {cmd.Permission}";
+				return false;
+			}
+			else if (!string.IsNullOrEmpty(cmd.PermissionString) && !sender.CheckPermission(cmd.PermissionString))
+			{
+				Response = $"You do not have the required permission to execute this command: {cmd.PermissionString}";
+				return false;
+			}
+
+			if (args.Count < cmd.Usage.Length)
+			{
+				Response = $"Missing argument: {cmd.Usage[args.Count]}";
+				return false;
+			}
+
+			if (cmd.Usage.Contains("%player%"))
+			{
+				var index = cmd.Usage.IndexOf("%player%");
+
+				var hubs = RAUtils.ProcessPlayerIdOrNamesList(args, index, out string[] newArgs, false);
+
+				if (hubs.Count < 1)
+				{
+					Response = $"No player(s) found for: {args.ElementAt(index)}";
+					return false;
+				}
+				else
+				{
+					foreach (var plr in hubs)
+					{
+						Players.Add(Player.Get(plr));
+					}
+				}
+			}
+
+			Response = string.Empty;
 			return true;
-		}
-
-		public static bool CanRun(ICommandSender sender, PlayerPermissions? perm, ArraySegment<string> arg, string[] expectedArgs, out string response, out List<Player> players)
-		{
-			players = new List<Player>();
-
-			if (perm != null && !sender.CheckPermission((PlayerPermissions)perm))
-			{
-				response = $"You do not have the required permission to execute this command: {perm}";
-				return false;
-			}
-
-			if (arg.Count < expectedArgs.Length)
-			{
-				response = $"Missing argument: {expectedArgs[arg.Count]}";
-				return false;
-			}
-
-			players = GetPlayersFromString(arg.Array[1]);
-			if (players.Count < 1)
-			{
-				response = "No valid players found";
-				return false;
-			}
-
-			response = string.Empty;
-			return true;
-		}
-
-		public static bool CanRun(ICommandSender sender, PlayerPermissions? perm, ArraySegment<string> arg, string[] expectedArgs, out string response)
-		{
-
-			if (perm != null && !sender.CheckPermission((PlayerPermissions)perm))
-			{
-				response = $"You do not have the required permission to execute this command: {perm}";
-				return false;
-			}
-
-			if (arg.Count < expectedArgs.Length)
-			{
-				response = $"Missing argument: {expectedArgs[arg.Count]}";
-				return false;
-			}
-
-			response = string.Empty;
-			return true;
-		}
-
-		public static bool CanRun(ICommandSender sender, string perm, ArraySegment<string> arg, string[] expectedArgs, out string response, out List<Player> players)
-		{
-			players = new List<Player>();
-
-			if (perm != null && !PermissionHandler.CheckPermission(sender, perm))
-			{
-				response = $"You do not have the required permission to execute this command: {perm}";
-				return false;
-			}
-
-			if (arg.Count < expectedArgs.Length)
-			{
-				response = $"Missing argument: {expectedArgs[arg.Count]}";
-				return false;
-			}
-
-			players = GetPlayersFromString(arg.Array[1]);
-			if (players.Count < 1)
-			{
-				response = "No valid players found";
-				return false;
-			}
-
-			response = string.Empty;
-			return true;
-		}
-
-		public static bool CanRun(ICommandSender sender, ArraySegment<string> arg, string[] expectedArgs, out string response, out List<Player> players)
-		{
-			players = new List<Player>();
-
-			if (arg.Count < expectedArgs.Length)
-			{
-				response = $"Missing argument: {expectedArgs[arg.Count]}";
-				return false;
-			}
-
-			players = GetPlayersFromString(arg.Array[1]);
-			if (players.Count < 1)
-			{
-				response = "No valid players found";
-				return false;
-			}
-
-			response = string.Empty;
-			return true;
-		}
-
-		internal static List<Player> GetPlayersFromString(string users)
-		{
-			var allPlayers = Server.GetPlayers();
-			if (users.ToLower() == "*")
-				return allPlayers.Where(p => !p.IsServer).ToList();
-
-			string[] playerStrings = users.Split('.');
-			List<Player> playerList = new List<Player>();
-
-			foreach (string plrStr in playerStrings)
-			{
-				Player plr = null;
-				if (int.TryParse(plrStr, out int id) && Player.TryGet(id, out plr))
-					playerList.Add(plr);
-				else if (Player.TryGet(plrStr, out plr))
-					playerList.Add(plr);
-				else if (Player.TryGetByName(plrStr, out plr))
-					playerList.Add(plr);
-			}
-
-			return playerList;
 		}
 
 		public static RoleTypeId GetRoleFromString(string role)

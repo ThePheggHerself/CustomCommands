@@ -22,8 +22,8 @@ namespace CustomCommands.Commands
 
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			if (!Extensions.CanRun(sender, PlayerPermissions.Noclip, arguments, Usage, out response, out List<Player> Players))
-				return false;
+			//if (!Extensions.CanRun(sender, PlayerPermissions.Noclip, arguments, Usage, out response, out List<Player> Players))
+			//	return false;
 
 			if (!float.TryParse(arguments.Array[2], out float x) || !float.TryParse(arguments.Array[2], out float y) || !float.TryParse(arguments.Array[2], out float z))
 			{
@@ -32,6 +32,8 @@ namespace CustomCommands.Commands
 			}
 
 			var svrPlrs = Server.GetPlayers();
+
+			List<Player> Players = new List<Player>();
 
 			foreach(var p in Players)
 			{

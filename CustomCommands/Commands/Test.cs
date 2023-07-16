@@ -28,9 +28,7 @@ namespace CustomCommands.Commands
 
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			bool canRun = Extensions.CanRun(arguments, Usage, out response);
-			if (!canRun)
-				return false;
+			Round.End();
 
 			//foreach(var a in Map.Rooms)
 			//{

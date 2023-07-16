@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace CustomCommands.Commands
 {
 	[CommandHandler(typeof(RemoteAdminCommandHandler))]
-	public class DropCommand : ICommand, IUsageProvider
+	public class DropCommand : ICustomCommand
 	{
 		public string Command => "drop";
 
@@ -20,16 +20,20 @@ namespace CustomCommands.Commands
 
 		public string[] Usage { get; } = { "%player%" };
 
+		public PlayerPermissions? Permission => PlayerPermissions.PlayersManagement;
+		public string PermissionString => string.Empty;
+
+		public bool RequirePlayerSender => false;
+
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			if(!Extensions.CanRun(sender, arguments, Usage, out response, out List<Player> plrs))
+			if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
 				return false;
 
-			foreach (Player plr in plrs)
+			foreach (Player plr in players)
 				plr.DropEverything();
 
-			response = $"Player {(plrs.Count > 1 ? "inventories" : "inventory")} dropped";
-
+			response = $"Player {(players.Count > 1 ? "inventories" : "inventory")} dropped";
 
 			return true;
 		}

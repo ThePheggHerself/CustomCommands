@@ -19,7 +19,7 @@ using InventorySystem.Items.Firearms.Attachments;
 namespace CustomCommands.Commands
 {
 	[CommandHandler(typeof(RemoteAdminCommandHandler))]
-	public class BattleEventCommand : ICommand, IUsageProvider
+	public class BattleEventCommand : ICustomCommand
 	{
 		public static ItemType[] items = new ItemType[]
 		{
@@ -37,10 +37,16 @@ namespace CustomCommands.Commands
 
 		public string[] Usage { get; } = { };
 
+		public PlayerPermissions? Permission => null;
+		public string PermissionString => "cuscom.events";
+
+		public bool RequirePlayerSender => true;
+
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			if (!Extensions.CanRun(sender, PlayerPermissions.PlayersManagement, arguments, Usage, out response))
+			if (!sender.CanRun(this, arguments, out response, out var plrs, out var psender))
 				return false;
+
 
 			Plugin.CurrentEvent = EventType.Battle;
 			Round.IsLocked = true;

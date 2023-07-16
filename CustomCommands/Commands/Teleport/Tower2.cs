@@ -11,7 +11,7 @@ using UnityEngine;
 namespace CustomCommands.Commands
 {
 	[CommandHandler(typeof(RemoteAdminCommandHandler))]
-	public class Tower2 : ICommand, IUsageProvider
+	public class Tower2 : ICustomCommand
 	{
 		public string Command => "tower2";
 
@@ -21,9 +21,14 @@ namespace CustomCommands.Commands
 
 		public string[] Usage { get; } = { "player" };
 
+		public PlayerPermissions? Permission => null;
+		public string PermissionString => "cuscom.teleporting";
+
+		public bool RequirePlayerSender => false;
+
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			if (!Extensions.CanRun(sender, arguments, Usage, out response, out List<Player> players))
+			if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
 				return false;
 
 			foreach (Player plr in players)

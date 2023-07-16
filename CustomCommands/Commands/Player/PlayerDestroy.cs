@@ -14,7 +14,7 @@ using UnityEngine.Playables;
 namespace CustomCommands.Commands
 {
 	[CommandHandler(typeof(RemoteAdminCommandHandler))]
-	public class PlayerDestroyCommand : ICommand, IUsageProvider
+	public class PlayerDestroyCommand : ICustomCommand
 	{
 		public string Command => "playerdestroy";
 
@@ -24,12 +24,17 @@ namespace CustomCommands.Commands
 
 		public string[] Usage { get; } = { "%player%" };
 
+		public PlayerPermissions? Permission => null;
+		public string PermissionString => "cuscom.playerdoorcontrol";
+
+		public bool RequirePlayerSender => false;
+
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-            if (!Extensions.CanRun(sender, PlayerPermissions.PermissionsManagement, arguments, Usage, out response, out List<Player> Plrs))
-                return false;
+			if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
+				return false;
 
-            foreach (var plr in Plrs)
+			foreach (var plr in players)
             {
                 if (plr.TemporaryData.Contains("pdest"))
                 {
@@ -39,7 +44,7 @@ namespace CustomCommands.Commands
                     plr.TemporaryData.Add("pdest", string.Empty);
             }
 
-            response = $"Playerdestroy toggled for {Plrs.Count} {(Plrs.Count != 1 ? "players" : "player")}.";
+            response = $"Playerdestroy toggled for {players.Count} {(players.Count != 1 ? "players" : "player")}.";
             return true;
         }
 	}

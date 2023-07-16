@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoiceChat;
 
-namespace CustomCommands.Commands
+namespace CustomCommands.Commands.Misc
 {
 	[CommandHandler(typeof(RemoteAdminCommandHandler))]
 	public class MuteCheckCommand : ICommand, IUsageProvider

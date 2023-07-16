@@ -12,6 +12,7 @@ using PluginAPI.Events;
 using InventorySystem.Items;
 using InventorySystem;
 using Utils;
+using CustomCommands.Commands.Misc;
 
 namespace CustomCommands
 {
@@ -184,6 +185,18 @@ namespace CustomCommands
 					}
 				});
 			}
+		}
+
+		[PluginEvent(ServerEventType.RoundRestart)]
+		public void RoundRestart(RoundRestartEvent args)
+		{
+			Plugin.SetVote(VoteType.NONE, string.Empty);
+		}
+
+		[PluginEvent(ServerEventType.RoundEnd)]
+		public void RoundEnd(RoundEndEvent args)
+		{
+			Plugin.EndVote();
 		}
 	}
 }

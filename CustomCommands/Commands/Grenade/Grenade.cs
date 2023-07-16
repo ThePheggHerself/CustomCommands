@@ -14,7 +14,7 @@ using Mirror;
 namespace CustomCommands.Commands
 {
 	[CommandHandler(typeof(RemoteAdminCommandHandler))]
-	public class GrenadeCommand : ICommand, IUsageProvider
+	public class GrenadeCommand : ICustomCommand
 	{
 		public string Command => "grenade";
 
@@ -24,14 +24,19 @@ namespace CustomCommands.Commands
 
 		public string[] Usage { get; } = { "%player%" };
 
+		public PlayerPermissions? Permission => null;
+		public string PermissionString => "cuscom.grenade";
+
+		public bool RequirePlayerSender => false;
+
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			if (!Extensions.CanRun(sender, PlayerPermissions.PlayersManagement, arguments, Usage, out response, out List<Player> Players))
+			if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
 				return false;
 
 			string[] args = arguments.ToArray();
 
-			foreach (Player plr in Players)
+			foreach (Player plr in players)
 			{
 				if (plr.Role == PlayerRoles.RoleTypeId.Spectator || plr.Role == PlayerRoles.RoleTypeId.Overwatch)
 					continue;
@@ -51,7 +56,7 @@ namespace CustomCommands.Commands
 				grenade.ServerActivate();
 			}
 
-			response = $"Spawned a grenade on {Players.Count} {(Players.Count > 1 ? "players" : "player")}";
+			response = $"Spawned a grenade on {players.Count} {(players.Count > 1 ? "players" : "player")}";
 			return true;
 		}
 	}

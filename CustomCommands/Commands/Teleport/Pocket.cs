@@ -10,7 +10,7 @@ using UnityEngine;
 namespace CustomCommands.Commands
 {
 	[CommandHandler(typeof(RemoteAdminCommandHandler))]
-	public class Pocket : ICommand, IUsageProvider
+	public class Pocket : ICustomCommand
 	{
 		public string Command => "pocket";
 
@@ -20,15 +20,20 @@ namespace CustomCommands.Commands
 
 		public string[] Usage { get; } = { "%player%" };
 
+		public PlayerPermissions? Permission => null;
+		public string PermissionString => "cuscom.teleporting";
+
+		public bool RequirePlayerSender => false;
+
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			if (!Extensions.CanRun(sender, arguments, Usage, out response, out List<Player> Players))
+			if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
 				return false;
 
-			foreach(Player player in Players)
+			foreach (Player player in players)
 				player.Position = Vector3.down * 1998.5f;
 
-			response = $"Teleported {Players.Count} {(Players.Count == 1 ? "player" : "players")} to the pocket dimension";
+			response = $"Teleported {players.Count} {(players.Count == 1 ? "player" : "players")} to the pocket dimension";
 			return true;
 		}
 	}

@@ -80,26 +80,31 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\BanCheck.cs" />
-    <Compile Include="Commands\DclassBattle.cs" />
-    <Compile Include="Commands\Hush.cs" />
-    <Compile Include="Commands\Infection.cs" />
-    <Compile Include="Commands\MuteCheck.cs" />
-    <Compile Include="Commands\PlayerDestroy.cs" />
-    <Compile Include="Commands\PlayerLock.cs" />
-    <Compile Include="Commands\Flash.cs" />
-    <Compile Include="Commands\Grenade.cs" />
-    <Compile Include="Commands\Ball.cs" />
-    <Compile Include="Commands\Drop.cs" />
-    <Compile Include="Commands\Pocket.cs" />
-    <Compile Include="Commands\SCPSwap.cs" />
+    <Compile Include="Commands\Client Commands\VoteNo.cs" />
+    <Compile Include="Commands\Client Commands\VoteYes.cs" />
+    <Compile Include="Commands\Misc\Vote.cs" />
+    <Compile Include="Commands\Events\TDM.cs" />
+    <Compile Include="Commands\Misc\BanCheck.cs" />
+    <Compile Include="Commands\Client Commands\SCPList.cs" />
+    <Compile Include="Commands\Events\DclassBattle.cs" />
+    <Compile Include="Commands\Events\Hush.cs" />
+    <Compile Include="Commands\Events\Infection.cs" />
+    <Compile Include="Commands\Misc\MuteCheck.cs" />
+    <Compile Include="Commands\Player\PlayerDestroy.cs" />
+    <Compile Include="Commands\Player\PlayerLock.cs" />
+    <Compile Include="Commands\Grenade\Flash.cs" />
+    <Compile Include="Commands\Grenade\Grenade.cs" />
+    <Compile Include="Commands\Grenade\Ball.cs" />
+    <Compile Include="Commands\Player\Drop.cs" />
+    <Compile Include="Commands\Teleport\Pocket.cs" />
+    <Compile Include="Commands\Client Commands\SCPSwap.cs" />
     <Compile Include="Commands\Size.cs" />
     <Compile Include="Commands\Test.cs" />
-    <Compile Include="Commands\Tower2.cs" />
+    <Compile Include="Commands\Teleport\Tower2.cs" />
     <Compile Include="Fixes.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Misc\Extensions.cs" />
-    <Compile Include="Misc\IPermissionRequirement.cs" />
+    <Compile Include="Misc\ICustomCommand.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

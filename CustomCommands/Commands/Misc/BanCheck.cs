@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CustomCommands.Commands
+namespace CustomCommands.Commands.Misc
 {
 	[CommandHandler(typeof(RemoteAdminCommandHandler))]
-	public class BanCheckCommand : ICommand, IUsageProvider
+	public class BanCheckCommand : ICustomCommand
 	{
 		public string Command => "bancheck";
 
@@ -18,6 +18,12 @@ namespace CustomCommands.Commands
 		public string Description => "Checks if a specific UserID or IP address is banned";
 
 		public string[] Usage { get; } = { "UserID/IP" };
+
+		public PlayerPermissions? Permission => null;
+
+		public string PermissionString => string.Empty;
+
+		public bool RequirePlayerSender => false;
 
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{

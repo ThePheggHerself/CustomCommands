@@ -25,9 +25,15 @@ namespace CustomCommands
         {
             if (!Plugin.EventInProgress && Round.IsRoundStarted && Round.Duration.TotalSeconds < 30)
                 args.Player.SetRole(RoleTypeId.ClassD, RoleChangeReason.LateJoin);
+
+            if (Plugin.VoteInProgress)
+            {
+				args.Player.SendBroadcast($"<b><color=#fa886b>[VOTE]</color></b> <color=#79b7ed>{Plugin.CurrentVoteString}</color>\nUse your console to vote now!", 15);
+				args.Player.SendConsoleMessage("A vote has been started. Run the `.yes` command to vote yes, or `.no` command to vote no");
+			}
         }
 
-        [PluginEvent(ServerEventType.Scp173NewObserver)]
+        //[PluginEvent(ServerEventType.Scp173NewObserver)]
         public bool New173Target(Scp173NewObserverEvent args)
         {
             if (args.Target.Role == RoleTypeId.Tutorial)
@@ -37,7 +43,7 @@ namespace CustomCommands
             else return true;
         }
 
-        [PluginEvent(ServerEventType.Scp096AddingTarget)]
+        //[PluginEvent(ServerEventType.Scp096AddingTarget)]
         public bool New096Target(Scp096AddingTargetEvent args)
         {
             if (args.Target.Role == RoleTypeId.Tutorial)

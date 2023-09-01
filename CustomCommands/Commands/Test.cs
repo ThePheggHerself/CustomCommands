@@ -28,8 +28,6 @@ namespace CustomCommands.Commands
 
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			Round.End();
-
 			//foreach(var a in Map.Rooms)
 			//{
 			//	a.ApiRoom.Lights.LightColor = Color.yellow;

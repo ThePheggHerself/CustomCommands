@@ -23,6 +23,8 @@ namespace CustomCommands.Commands.Client_Commands
 		{
 			if (sender is PlayerCommandSender pSender && pSender.ReferenceHub.IsSCP())
 			{
+				var plr = Player.Get(pSender.ReferenceHub);
+
 				var scps = Player.GetPlayers().Where(r => r.IsSCP);
 
 				if (!scps.Any())

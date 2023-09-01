@@ -13,6 +13,8 @@ using InventorySystem.Items;
 using InventorySystem;
 using Utils;
 using CustomCommands.Commands.Misc;
+using System;
+using UnityEngine;
 
 namespace CustomCommands
 {
@@ -47,7 +49,7 @@ namespace CustomCommands
 			}
 			else
 			{
-				if(args.Player.TemporaryData.Contains("plock") && args.Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
+				if (args.Player.TemporaryData.Contains("plock") && args.Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
 				{
 					args.Door.ServerChangeLock(DoorLockReason.AdminCommand, true);
 					args.Door.UnlockLater(1, DoorLockReason.AdminCommand);
@@ -92,6 +94,7 @@ namespace CustomCommands
 				}
 			}
 		}
+
 
 		[PluginEvent(ServerEventType.PlayerDeactivatedGenerator)]
 		public void GeneratorDeactivated(PlayerDeactivatedGeneratorEvent args)

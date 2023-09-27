@@ -1,10 +1,13 @@
 ﻿using CommandSystem;
+using CustomCommands.Events;
+using InventorySystem;
 using Mirror;
 using NWAPIPermissionSystem;
 using PlayerRoles.PlayableScps.Scp079.Cameras;
 using PlayerRoles.Ragdolls;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
+using PluginAPI.Core.Items;
 using PluginAPI.Events;
 using System;
 using System.Collections.Generic;
@@ -52,10 +55,37 @@ namespace CustomCommands
 		{
 			Log.Info($"Plugin is loading...");
 
-			EventManager.RegisterEvents<Events>(this);
-			EventManager.RegisterEvents<Fixes>(this);
+			EventManager.RegisterEvents<DebugTests>(this);
+			EventManager.RegisterEvents<DoorLocking>(this);
+			EventManager.RegisterEvents<EventEffects>(this);
+			EventManager.RegisterEvents<LateJoin>(this);
+			EventManager.RegisterEvents<NameFix>(this);
+			//EventManager.RegisterEvents<SCP008>(this);
+			EventManager.RegisterEvents<SCPSwap>(this);
+			EventManager.RegisterEvents<SurfaceLightingFix>(this);
+			EventManager.RegisterEvents<TutorialFixes>(this);
+			EventManager.RegisterEvents<Voting>(this);
+
+			//InventoryExtensions.OnItemAdded += InventoryExtensions_OnItemAdded;
+			//InventoryExtensions.OnItemRemoved += InventoryExtensions_OnItemRemoved;
 
 			//RagdollManager.OnRagdollSpawned += RagdollManager_OnRagdollSpawned;
+		}
+
+		private void InventoryExtensions_OnItemRemoved(ReferenceHub refHub, InventorySystem.Items.ItemBase item, InventorySystem.Items.Pickups.ItemPickupBase itemPickup)
+		{
+			if (item == null && item.gameObject.TryGetComponent<SCP008Item>(out SCP008Item scp008Item))
+			{
+				itemPickup.gameObject.AddComponent<SCP008Item>();
+			}
+		}
+
+		private void InventoryExtensions_OnItemAdded(ReferenceHub refHub, InventorySystem.Items.ItemBase item, InventorySystem.Items.Pickups.ItemPickupBase itemPickup)
+		{
+			if(itemPickup != null && itemPickup.gameObject.TryGetComponent<SCP008Item>(out SCP008Item scp008Item))
+			{
+				item.gameObject.AddComponent<SCP008Item>();
+			}
 		}
 
 		private void RagdollManager_OnRagdollSpawned(BasicRagdoll obj)

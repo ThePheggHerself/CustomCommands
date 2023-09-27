@@ -5,33 +5,30 @@ using PlayerRoles;
 using PlayerStatsSystem;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
+using PluginAPI.Core.Zones.Heavy;
 using PluginAPI.Enums;
+using PluginAPI.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using PluginAPI.Events;
-using InventorySystem.Items;
-using InventorySystem;
-using Utils;
-using CustomCommands.Commands.Misc;
-using System;
-using UnityEngine;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CustomCommands
+namespace CustomCommands.Events
 {
-	public class Events
+	public class EventEffects
 	{
-		public List<Scp079Generator> generators = new List<Scp079Generator>();
+		List<Scp079Generator> generators = new List<Scp079Generator>();
 
 		[PluginEvent(ServerEventType.RoundRestart)]
-		public void OnRoundRestart()
+		public void RoundRestart()
 		{
 			Plugin.CurrentEvent = EventType.NONE;
-
 			generators.Clear();
 		}
 
 		[PluginEvent(ServerEventType.TeamRespawn)]
-		public bool RespawningEvent(TeamRespawnEvent args)
+		public bool TeamRespawn(TeamRespawnEvent args)
 		{
 			if (Plugin.EventInProgress)
 				return false;
@@ -39,7 +36,7 @@ namespace CustomCommands
 		}
 
 		[PluginEvent(ServerEventType.PlayerInteractDoor)]
-		public bool OnPlayerDoorInteract(PlayerInteractDoorEvent args)
+		public bool PlayerInteractDoor(PlayerInteractDoorEvent args)
 		{
 			if (Plugin.EventInProgress)
 			{
@@ -47,30 +44,10 @@ namespace CustomCommands
 					return true;
 				else return false;
 			}
-			else
-			{
-				if (args.Player.TemporaryData.Contains("plock") && args.Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
-				{
-					args.Door.ServerChangeLock(DoorLockReason.AdminCommand, true);
-					args.Door.UnlockLater(1, DoorLockReason.AdminCommand);
-
-					args.CanOpen = false;
-					return false;
-				}
-				else if (args.Player.TemporaryData.Contains("pdest") && args.Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
-				{
-					if (args.Door is IDamageableDoor dmgDoor && args.Door.RequiredPermissions.RequiredPermissions == KeycardPermissions.None)
-					{
-						dmgDoor.ServerDamage(10000, DoorDamageType.ServerCommand);
-
-						args.CanOpen = false;
-						return false;
-					}
-				}
-
-				return args.CanOpen;
-			}
+			return args.CanOpen;
 		}
+
+
 
 		[PluginEvent(ServerEventType.GeneratorActivated)]
 		public void GeneratorActivated(GeneratorActivatedEvent args)
@@ -124,7 +101,7 @@ namespace CustomCommands
 		}
 
 		[PluginEvent(ServerEventType.PlayerThrowItem)]
-		public bool ThrowItem(PlayerThrowItemEvent args)
+		public bool PlayerThrowItem(PlayerThrowItemEvent args)
 		{
 			if (Plugin.EventInProgress)
 			{
@@ -164,7 +141,7 @@ namespace CustomCommands
 		}
 
 		[PluginEvent(ServerEventType.PlayerDying), PluginPriority(LoadPriority.Highest)]
-		public bool PlayerDeath(PlayerDyingEvent args)
+		public bool PlayerDying(PlayerDyingEvent args)
 		{
 			if (Plugin.CurrentEvent == EventType.Infection && args.DamageHandler is AttackerDamageHandler aDH)
 			{
@@ -172,34 +149,8 @@ namespace CustomCommands
 
 				return false;
 			}
+
 			return true;
-		}
-
-		[PluginEvent(ServerEventType.PlayerCoinFlip)]
-		public void CoinFlip(PlayerCoinFlipEvent args)
-		{
-			if (args.Player.Role == RoleTypeId.Tutorial)
-			{
-				MEC.Timing.CallDelayed(2, () =>
-				{
-					if (!args.IsTails)
-					{
-						ExplosionUtils.ServerExplode(args.Player.ReferenceHub);
-					}
-				});
-			}
-		}
-
-		[PluginEvent(ServerEventType.RoundRestart)]
-		public void RoundRestart(RoundRestartEvent args)
-		{
-			Plugin.SetVote(VoteType.NONE, string.Empty);
-		}
-
-		[PluginEvent(ServerEventType.RoundEnd)]
-		public void RoundEnd(RoundEndEvent args)
-		{
-			Plugin.EndVote();
 		}
 	}
 }

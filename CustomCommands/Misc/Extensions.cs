@@ -84,5 +84,10 @@ namespace CustomCommands
 					return RoleTypeId.Scp106;
 			}
 		}
+
+		public static bool IsValidSCP(this RoleTypeId role)
+		{
+			return role == RoleTypeId.Scp173 || role == RoleTypeId.Scp049 || role == RoleTypeId.Scp079 || role == RoleTypeId.Scp096 || role == RoleTypeId.Scp106 || role == RoleTypeId.Scp939;
+		}
 	}
 }

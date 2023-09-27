@@ -84,7 +84,7 @@ namespace CustomCommands.Commands
 					plr.ReferenceHub.roleManager.ServerSetRole(RoleTypeId.Scientist, RoleChangeReason.RemoteAdmin, RoleSpawnFlags.None);
 					plr.Position = new Vector3(room939.ApiRoom.Position.x, room939.ApiRoom.Position.y + 1, room939.ApiRoom.Position.z);
 
-					plr.AddItem(ItemType.KeycardNTFCommander);
+					plr.AddItem(ItemType.KeycardMTFCaptain);
 					var itemBase = plr.AddItem(ItemType.Flashlight);
 
 					plr.SendBroadcast("Enable all the generators. The SCPs will be released in 10 seconds", 10, shouldClearPrevious: true);

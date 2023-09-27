@@ -2,6 +2,9 @@
 using InventorySystem;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.Attachments;
+using MapGeneration;
+using MapGeneration.Distributors;
+using Mirror;
 using PluginAPI.Core;
 using RemoteAdmin;
 using System;
@@ -28,18 +31,24 @@ namespace CustomCommands.Commands
 
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			//foreach(var a in Map.Rooms)
-			//{
-			//	a.ApiRoom.Lights.LightColor = Color.yellow;
-			//}
+			//var room = RoomIdentifier.AllRoomIdentifiers.Where(r => r.Name == RoomName.Hcz939).First();
+			//var lightPrefab = NetworkClient.prefabs.Where(r => r.Value.name == "Scp1853PedestalStructure Variant").First();
 
-			//if(sender is PlayerCommandSender pSender)
-			//{
-			//	Firearm gun = (Firearm)pSender.ReferenceHub.inventory.ServerAddItem(ItemType.GunE11SR);
-			//	gun.ValidateAttachmentsCode(9572898);
-			//	gun.ApplyAttachmentsCode(9572898, true);
+			//var lightGO = GameObject.Instantiate(lightPrefab.Value);
+			//lightGO.transform.parent = room.transform;
 
-			//	gun.Status = new FirearmStatus(gun.AmmoManagerModule.MaxAmmo, FirearmStatusFlags.Cocked | FirearmStatusFlags.MagazineInserted | FirearmStatusFlags.FlashlightEnabled | FirearmStatusFlags.Chambered, gun.GetCurrentAttachmentsCode());
+			////lightGO.transform.localPosition =  new UnityEngine.Vector3(3.5f, 0, 5.5f);
+
+			//lightGO.transform.localPosition = Vector3.zero;
+			//lightGO.transform.localPosition += Vector3.forward * float.Parse(arguments.ElementAt(1));
+			//lightGO.transform.localPosition += Vector3.right * float.Parse(arguments.ElementAt(2));
+
+			//lightGO.transform.rotation = room.transform.rotation;
+			//lightGO.transform.Rotate(0, -90, 0);
+			//NetworkServer.Spawn(lightGO);
+
+			//foreach(Component a in lightGO.GetComponents(typeof(Component))){
+			//	Log.Info($"{a.name} | {a.GetType()}");
 			//}
 
 			response = $"Never gonna give you up,\nNever gonna let you down.\nNever gonna run around,\nAnd desert you.\nNever gonna make you cry,\nNever gonna say goodbye.\nNever gonna tell a lie,\nAnd hurt you.";

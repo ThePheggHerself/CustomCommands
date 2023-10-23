@@ -67,22 +67,9 @@ namespace CustomCommands
 
 		public static RoleTypeId GetRoleFromString(string role)
 		{
-			switch (role.ToLower().Replace("scp", string.Empty))
-			{
-				case "049":
-					return RoleTypeId.Scp049;
-				case "079":
-					return RoleTypeId.Scp079;
-				case "939":
-					return RoleTypeId.Scp939;
-				case "173":
-					return RoleTypeId.Scp173;
-				case "096":
-					return RoleTypeId.Scp096;
-				case "106":
-				default:
-					return RoleTypeId.Scp106;
-			}
+			if (Enum.TryParse<RoleTypeId>("Scp" + role.ToLower().Replace("scp", string.Empty), out var parsedSCP) && parsedSCP != RoleTypeId.Scp0492)
+                return parsedSCP;
+			return RoleTypeId.Scp106;
 		}
 
 		public static bool IsValidSCP(this RoleTypeId role)

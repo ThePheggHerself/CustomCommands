@@ -60,14 +60,16 @@ namespace CustomCommands
 			EventManager.RegisterEvents<EventEffects>(this);
 			EventManager.RegisterEvents<LateJoin>(this);
 			EventManager.RegisterEvents<NameFix>(this);
-			//EventManager.RegisterEvents<SCP008>(this);
+			EventManager.RegisterEvents<SCPDamageAnnouncement>(this);		
 			EventManager.RegisterEvents<SCPSwap>(this);
 			EventManager.RegisterEvents<SurfaceLightingFix>(this);
 			EventManager.RegisterEvents<TutorialFixes>(this);
 			EventManager.RegisterEvents<Voting>(this);
 
-			//InventoryExtensions.OnItemAdded += InventoryExtensions_OnItemAdded;
-			//InventoryExtensions.OnItemRemoved += InventoryExtensions_OnItemRemoved;
+			EventManager.RegisterEvents<SCP008>(this);
+
+			InventoryExtensions.OnItemAdded += InventoryExtensions_OnItemAdded;
+			InventoryExtensions.OnItemRemoved += InventoryExtensions_OnItemRemoved;
 
 			//RagdollManager.OnRagdollSpawned += RagdollManager_OnRagdollSpawned;
 		}

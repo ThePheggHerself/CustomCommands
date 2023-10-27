@@ -43,7 +43,7 @@ namespace CustomCommands.Commands
 					return false;
 				}
 
-				var role = Extensions.GetRoleFromString(arguments.Array[1]);
+				var role = Extensions.GetRoleFromString($"SCP" + arguments.Array[1]);
 
 				if (!Player.GetPlayers().Where(r => r.Role == role).Any())
 				{

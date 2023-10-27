@@ -116,6 +116,7 @@
     <Compile Include="Events\LateJoin.cs" />
     <Compile Include="Events\NameFix.cs" />
     <Compile Include="Events\SCP008.cs" />
+    <Compile Include="Events\SCPDamageAnnouncement.cs" />
     <Compile Include="Events\SCPSwap.cs" />
     <Compile Include="Events\SurfaceLightingFix.cs" />
     <Compile Include="Events\TutorialFixes.cs" />

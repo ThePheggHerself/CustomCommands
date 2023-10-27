@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using PluginAPI.Core;
 using TMPro;
+using PlayerRoles.PlayableScps.Scp079;
 
 namespace CustomCommands.Events
 {
@@ -36,9 +37,12 @@ namespace CustomCommands.Events
 			NetworkServer.Spawn(pedestal);
 
 			pedestal.AddComponent<SCP008Pedestal>();
+			pedestal.AddComponent<Scp079Speaker>();
 
 			//Log.Info(content.Count.ToString());
 		}
+
+		
 
 		[PluginEvent(ServerEventType.RoundStart)]
 		public void roundstart(RoundStartEvent args)

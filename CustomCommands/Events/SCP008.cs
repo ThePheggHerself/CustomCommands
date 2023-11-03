@@ -15,6 +15,7 @@ using UnityEngine;
 using PluginAPI.Core;
 using TMPro;
 using PlayerRoles.PlayableScps.Scp079;
+using UnityEngine.AI;
 
 namespace CustomCommands.Events
 {
@@ -41,8 +42,6 @@ namespace CustomCommands.Events
 
 			//Log.Info(content.Count.ToString());
 		}
-
-		
 
 		[PluginEvent(ServerEventType.RoundStart)]
 		public void roundstart(RoundStartEvent args)

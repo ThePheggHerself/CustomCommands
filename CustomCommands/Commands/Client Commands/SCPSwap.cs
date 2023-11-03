@@ -45,6 +45,12 @@ namespace CustomCommands.Commands
 
 				var role = Extensions.GetRoleFromString($"SCP" + arguments.Array[1]);
 
+				if(role == RoleTypeId.None)
+				{
+					response = "No valid SCP provided";
+					return false;
+				}
+
 				if (!Player.GetPlayers().Where(r => r.Role == role).Any())
 				{
 					player.SetRole(role);

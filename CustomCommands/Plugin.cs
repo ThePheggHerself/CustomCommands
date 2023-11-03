@@ -1,6 +1,7 @@
 ﻿using CommandSystem;
 using CustomCommands.Events;
 using InventorySystem;
+using MEC;
 using Mirror;
 using NWAPIPermissionSystem;
 using PlayerRoles.PlayableScps.Scp079.Cameras;
@@ -14,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Android;
 using Utils;
 
@@ -65,13 +67,24 @@ namespace CustomCommands
 			EventManager.RegisterEvents<SurfaceLightingFix>(this);
 			EventManager.RegisterEvents<TutorialFixes>(this);
 			EventManager.RegisterEvents<Voting>(this);
+			//EventManager.RegisterEvents<SCP3114Overhaul>(this);
 
-			EventManager.RegisterEvents<SCP008>(this);
+			//EventManager.RegisterEvents<SCP008>(this);
 
-			InventoryExtensions.OnItemAdded += InventoryExtensions_OnItemAdded;
-			InventoryExtensions.OnItemRemoved += InventoryExtensions_OnItemRemoved;
+			//InventoryExtensions.OnItemAdded += InventoryExtensions_OnItemAdded;
+			//InventoryExtensions.OnItemRemoved += InventoryExtensions_OnItemRemoved;
 
 			//RagdollManager.OnRagdollSpawned += RagdollManager_OnRagdollSpawned;
+
+			CharacterClassManager.OnRoundStarted += CharacterClassManager_OnRoundStarted;
+		}
+
+		private void CharacterClassManager_OnRoundStarted()
+		{
+			Timing.CallDelayed(0.5f, () =>
+			{
+				GameObject.FindObjectOfType<SkyboxHubert>().NetworkHubert = true;
+			});
 		}
 
 		private void InventoryExtensions_OnItemRemoved(ReferenceHub refHub, InventorySystem.Items.ItemBase item, InventorySystem.Items.Pickups.ItemPickupBase itemPickup)

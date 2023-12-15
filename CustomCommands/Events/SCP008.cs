@@ -16,6 +16,7 @@ using PluginAPI.Core;
 using TMPro;
 using PlayerRoles.PlayableScps.Scp079;
 using UnityEngine.AI;
+using Utils;
 
 namespace CustomCommands.Events
 {

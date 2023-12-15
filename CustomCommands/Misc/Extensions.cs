@@ -71,6 +71,9 @@ namespace CustomCommands
 
 			if (Enum.TryParse(role, true, out RoleTypeId roleType))
 			{
+                if (roleType == RoleTypeId.Scp3114 || roleType == RoleTypeId.Scp0492)
+                    return RoleTypeId.None;
+
 				return roleType;
 			}
 			else return RoleTypeId.None;

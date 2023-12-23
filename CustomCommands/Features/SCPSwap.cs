@@ -112,7 +112,7 @@ namespace CustomCommands.Features
         }
     }
 
-    //[CommandHandler(typeof(ClientCommandHandler))]
+    [CommandHandler(typeof(ClientCommandHandler))]
     public class cmdSwapToHuman : ICustomCommand
     {
         public string Command => "human";
@@ -161,7 +161,7 @@ namespace CustomCommands.Features
         }
     }
 
-    //[CommandHandler(typeof(ClientCommandHandler))]
+    [CommandHandler(typeof(ClientCommandHandler))]
     public class cmdSwapFromHuman : ICustomCommand
     {
         public string Command => "scpreplace";
@@ -223,8 +223,6 @@ namespace CustomCommands.Features
 
 
 
-
-
     public class SCPSwap
 	{
         public static int SCPsToReplace = 0;
@@ -253,23 +251,23 @@ namespace CustomCommands.Features
 			if (args.Player.Role.IsValidSCP() && Round.Duration < TimeSpan.FromMinutes(1) && !Plugin.EventInProgress)
 			{
 				args.Player.SendBroadcast("You can change your SCP by using the \".scpswap\" command in your console", 5);
-				//args.Player.SendBroadcast("You can change back to a human role by running the \".human\" command", 5);
+				args.Player.SendBroadcast("You can change back to a human role by running the \".human\" command", 5);
 			}
 		}
 
-		//[PluginEvent(ServerEventType.RoundStart)]
+		[PluginEvent(ServerEventType.RoundStart)]
 		public void RoundStart(RoundStartEvent args)
 		{
             SCPsToReplace = 0;
 		}
 
-		//[PluginEvent(ServerEventType.RoundEnd)]
+		[PluginEvent(ServerEventType.RoundEnd)]
 		public void RoundEnd(RoundEndEvent args)
 		{
             SCPsToReplace = 0;
         }
 
-        //[PluginEvent(ServerEventType.PlayerLeft)]
+        [PluginEvent(ServerEventType.PlayerLeft)]
         public void PlayerLeave(PlayerLeftEvent args)
         {
             if (Round.Duration < TimeSpan.FromSeconds(30) && args.Player.IsSCP)

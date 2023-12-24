@@ -164,7 +164,7 @@ namespace CustomCommands.Features
     [CommandHandler(typeof(ClientCommandHandler))]
     public class cmdSwapFromHuman : ICustomCommand
     {
-        public string Command => "scpreplace";
+        public string Command => "scp";
 
         public string[] Aliases => null;
         public string Description => "Replaces you with an SCP who disconnected or swapped to human";

@@ -117,7 +117,12 @@ namespace CustomCommands.Events
 		{
 			if (Plugin.EventInProgress)
 			{
-				if (Plugin.CurrentEvent == EventType.Hush)
+                if (Plugin.CurrentEvent == EventType.SnowballFight)
+                {
+                    return false;
+                }
+
+                if (Plugin.CurrentEvent == EventType.Hush)
 				{
 					if (args.Elevator.AssignedGroup == ElevatorManager.ElevatorGroup.Nuke)
 						return true;
@@ -152,5 +157,30 @@ namespace CustomCommands.Events
 
 			return true;
 		}
-	}
+
+        [PluginEvent(ServerEventType.PlayerDeath)]
+        public void PlayerDeath(PlayerDeathEvent args)
+        {
+            if (Plugin.CurrentEvent == EventType.SnowballFight)
+            {
+                args.Attacker.Heal(15);
+            }
+        }
+
+        [PluginEvent(ServerEventType.PlayerThrowProjectile)]
+        public void PlayerThrowProjectile(PlayerThrowProjectileEvent args)
+        {
+
+            if (Plugin.CurrentEvent == EventType.SnowballFight)
+            {
+                if (args.Item.ItemTypeId == ItemType.Snowball)
+                    args.Thrower.AddItem(ItemType.Snowball);
+            }
+        }
+
+    
+
+
+
+    }
 }

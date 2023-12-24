@@ -27,7 +27,8 @@ namespace CustomCommands
 
 		Infection = 1,
 		Battle = 2,
-		Hush = 3
+		Hush = 3,
+		SnowballFight = 4 // This event is christmas-exclusive.
 	}
 	public enum VoteType
 	{

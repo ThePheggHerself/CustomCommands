@@ -97,15 +97,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Client Commands\VoteNo.cs" />
-    <Compile Include="Commands\Client Commands\VoteYes.cs" />
-    <Compile Include="Commands\Dummy\DummyCreate.cs" />
-    <Compile Include="Commands\Dummy\DummyDestroy.cs" />
+    <Compile Include="Commands\Events\ChristmasSnowballFight.cs" />
     <Compile Include="Commands\Grenade\Explode.cs" />
     <Compile Include="Commands\Misc\Vote.cs" />
     <Compile Include="Commands\Events\TDM.cs" />
     <Compile Include="Commands\Misc\BanCheck.cs" />
-    <Compile Include="Commands\Client Commands\SCPList.cs" />
     <Compile Include="Commands\Events\DclassBattle.cs" />
     <Compile Include="Commands\Events\Hush.cs" />
     <Compile Include="Commands\Events\Infection.cs" />
@@ -117,7 +113,6 @@
     <Compile Include="Commands\Grenade\Ball.cs" />
     <Compile Include="Commands\Player\Drop.cs" />
     <Compile Include="Commands\Teleport\Pocket.cs" />
-    <Compile Include="Commands\Client Commands\SCPSwap.cs" />
     <Compile Include="Commands\Size.cs" />
     <Compile Include="Commands\Test.cs" />
     <Compile Include="Commands\Teleport\Tower2.cs" />
@@ -129,11 +124,11 @@
     <Compile Include="Events\SCP008.cs" />
     <Compile Include="Events\SCP3114Overhaul.cs" />
     <Compile Include="Events\SCPDamageAnnouncement.cs" />
-    <Compile Include="Events\SCPSwap.cs" />
+    <Compile Include="Features\Dummy.cs" />
+    <Compile Include="Features\SCPSwap.cs" />
     <Compile Include="Events\SurfaceLightingFix.cs" />
     <Compile Include="Events\TutorialFixes.cs" />
-    <Compile Include="Events\Voting.cs" />
-    <Compile Include="Misc\Dummy.cs" />
+    <Compile Include="Features\Voting.cs" />
     <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Misc\ICustomCommand.cs" />
     <Compile Include="Plugin.cs" />

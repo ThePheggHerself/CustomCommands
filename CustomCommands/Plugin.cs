@@ -27,7 +27,8 @@ namespace CustomCommands
 
 		Infection = 1,
 		Battle = 2,
-		Hush = 3
+		Hush = 3,
+		SnowballFight = 4 // This event is christmas-exclusive.
 	}
 	public enum VoteType
 	{
@@ -63,10 +64,10 @@ namespace CustomCommands
 			EventManager.RegisterEvents<LateJoin>(this);
 			EventManager.RegisterEvents<NameFix>(this);
 			EventManager.RegisterEvents<SCPDamageAnnouncement>(this);		
-			EventManager.RegisterEvents<SCPSwap>(this);
+			EventManager.RegisterEvents<Features.SCPSwap>(this);
 			EventManager.RegisterEvents<SurfaceLightingFix>(this);
 			EventManager.RegisterEvents<TutorialFixes>(this);
-			EventManager.RegisterEvents<Voting>(this);
+			EventManager.RegisterEvents<Features.Voting>(this);
 			//EventManager.RegisterEvents<SCP3114Overhaul>(this);
 
 			//EventManager.RegisterEvents<SCP008>(this);
@@ -75,16 +76,6 @@ namespace CustomCommands
 			//InventoryExtensions.OnItemRemoved += InventoryExtensions_OnItemRemoved;
 
 			//RagdollManager.OnRagdollSpawned += RagdollManager_OnRagdollSpawned;
-
-			CharacterClassManager.OnRoundStarted += CharacterClassManager_OnRoundStarted;
-		}
-
-		private void CharacterClassManager_OnRoundStarted()
-		{
-			Timing.CallDelayed(0.5f, () =>
-			{
-				GameObject.FindObjectOfType<SkyboxHubert>().NetworkHubert = true;
-			});
 		}
 
 		private void InventoryExtensions_OnItemRemoved(ReferenceHub refHub, InventorySystem.Items.ItemBase item, InventorySystem.Items.Pickups.ItemPickupBase itemPickup)

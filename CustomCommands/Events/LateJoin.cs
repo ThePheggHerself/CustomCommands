@@ -1,4 +1,5 @@
 ﻿using PlayerRoles;
+using PlayerRoles.RoleAssign;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
@@ -17,7 +18,7 @@ namespace CustomCommands.Events
 		public void PlayerJoin(PlayerJoinedEvent args)
 		{
 			if (!Plugin.EventInProgress && Round.IsRoundStarted && Round.Duration.TotalSeconds < 30)
-				args.Player.SetRole(RoleTypeId.ClassD, RoleChangeReason.LateJoin);
-		}
+                HumanSpawner.SpawnLate(args.Player.ReferenceHub);
+        }
 	}
 }

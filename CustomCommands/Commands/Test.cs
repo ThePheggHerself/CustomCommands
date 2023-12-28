@@ -1,28 +1,8 @@
 ﻿using CommandSystem;
-using CustomCommands.Misc;
-using InventorySystem;
-using InventorySystem.Items.Firearms;
-using InventorySystem.Items.Firearms.Attachments;
-using InventorySystem.Items.Pickups;
-using MapGeneration;
-using MapGeneration.Distributors;
-using MEC;
-using Mirror;
-using PlayerRoles;
-using PlayerRoles.PlayableScps.Scp3114;
-using PlayerRoles.Ragdolls;
-using PlayerStatsSystem;
 using PluginAPI.Core;
 using RemoteAdmin;
 using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using static UnityEngine.UI.GridLayoutGroup;
 
 namespace CustomCommands.Commands
 {

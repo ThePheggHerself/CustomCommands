@@ -65,12 +65,20 @@ namespace CustomCommands
 			return true;
 		}
 
+        public static RoleTypeId[] ValidSwapSCP = new RoleTypeId[]
+        {
+            RoleTypeId.Scp173, RoleTypeId.Scp049, RoleTypeId.Scp079,RoleTypeId.Scp096, RoleTypeId.Scp106,RoleTypeId.Scp939, RoleTypeId.Scp3114
+        };
+
 		public static RoleTypeId GetRoleFromString(string role)
 		{
 			var roles = Enum.GetNames(typeof(RoleTypeId));
 
 			if (Enum.TryParse(role, true, out RoleTypeId roleType))
 			{
+                if(!IsValidSCP(roleType))
+                    return RoleTypeId.None;
+
 				return roleType;
 			}
 			else return RoleTypeId.None;
@@ -78,7 +86,7 @@ namespace CustomCommands
 
 		public static bool IsValidSCP(this RoleTypeId role)
 		{
-			return role == RoleTypeId.Scp173 || role == RoleTypeId.Scp049 || role == RoleTypeId.Scp079 || role == RoleTypeId.Scp096 || role == RoleTypeId.Scp106 || role == RoleTypeId.Scp939;
+			return ValidSwapSCP.Contains(role);
 		}
 	}
 }

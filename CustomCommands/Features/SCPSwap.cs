@@ -150,7 +150,7 @@ namespace CustomCommands.Features
                 player.TemporaryData.Add("startedasscp", true.ToString());
 
                 var count = SCPSwap.SCPsToReplace;
-                ReplaceBroadcast();
+                SCPSwap.ReplaceBroadcast();
 
                 response = "You have now swapped to Human from SCP";
                 return true;

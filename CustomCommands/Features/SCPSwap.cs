@@ -1,4 +1,4 @@
-﻿using CommandSystem;
+using CommandSystem;
 using MEC;
 using PlayerRoles;
 using PlayerRoles.RoleAssign;
@@ -255,6 +255,7 @@ namespace CustomCommands.Features
 	{
         public static int SCPsToReplace = 0;
         public static void ReplaceBroadcast() => Server.SendBroadcast($"There {(SCPsToReplace == 1 ? "is" : "are")} now {SCPsToReplace} SCP spot{(SCPsToReplace == 1 ? "" : "s")} available. Run \".scp\" to queue for an SCP", 5);
+
 
         public static RoleTypeId[] AvailableSCPs
         {

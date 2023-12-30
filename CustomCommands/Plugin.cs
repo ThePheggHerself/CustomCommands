@@ -4,6 +4,7 @@ using InventorySystem;
 using MEC;
 using Mirror;
 using NWAPIPermissionSystem;
+using PlayerRoles.PlayableScps.Scp079;
 using PlayerRoles.PlayableScps.Scp079.Cameras;
 using PlayerRoles.Ragdolls;
 using PluginAPI.Core;
@@ -70,39 +71,7 @@ namespace CustomCommands
 			EventManager.RegisterEvents<Features.Voting>(this);
 			//EventManager.RegisterEvents<SCP3114Overhaul>(this);
 
-			//EventManager.RegisterEvents<SCP008>(this);
-
-			//InventoryExtensions.OnItemAdded += InventoryExtensions_OnItemAdded;
-			//InventoryExtensions.OnItemRemoved += InventoryExtensions_OnItemRemoved;
-
-			//RagdollManager.OnRagdollSpawned += RagdollManager_OnRagdollSpawned;
-		}
-
-		private void InventoryExtensions_OnItemRemoved(ReferenceHub refHub, InventorySystem.Items.ItemBase item, InventorySystem.Items.Pickups.ItemPickupBase itemPickup)
-		{
-			if (item == null && item.gameObject.TryGetComponent<SCP008Item>(out SCP008Item scp008Item))
-			{
-				itemPickup.gameObject.AddComponent<SCP008Item>();
-			}
-		}
-
-		private void InventoryExtensions_OnItemAdded(ReferenceHub refHub, InventorySystem.Items.ItemBase item, InventorySystem.Items.Pickups.ItemPickupBase itemPickup)
-		{
-			if(itemPickup != null && itemPickup.gameObject.TryGetComponent<SCP008Item>(out SCP008Item scp008Item))
-			{
-				item.gameObject.AddComponent<SCP008Item>();
-			}
-		}
-
-		private void RagdollManager_OnRagdollSpawned(BasicRagdoll obj)
-		{
-			MEC.Timing.CallDelayed(5, () =>
-			{
-				//ExplosionUtils.ServerExplode(obj.transform.position, new Footprinting.Footprint(obj.Info.OwnerHub));
-
-				ExplosionUtils.ServerSpawnEffect(obj.CenterPoint.position, ItemType.GrenadeHE);
-				NetworkServer.Destroy(obj.gameObject);
-			});
+			RagdollManager.OnRagdollSpawned += MiscEvents.RagdollManager_OnRagdollSpawned;
 		}
 
 		public static void EndVote()

@@ -114,14 +114,16 @@
     <Compile Include="Commands\Player\Drop.cs" />
     <Compile Include="Commands\Teleport\Pocket.cs" />
     <Compile Include="Commands\Size.cs" />
+    <Compile Include="Commands\Teleport\SendToPlayer.cs" />
+    <Compile Include="Commands\Teleport\TeleportToCoords.cs" />
     <Compile Include="Commands\Test.cs" />
     <Compile Include="Commands\Teleport\Tower2.cs" />
     <Compile Include="Events\DebugTests.cs" />
     <Compile Include="Events\DoorLocking.cs" />
     <Compile Include="Events\EventEffects.cs" />
     <Compile Include="Events\LateJoin.cs" />
+    <Compile Include="Events\MiscEvents.cs" />
     <Compile Include="Events\NameFix.cs" />
-    <Compile Include="Events\SCP008.cs" />
     <Compile Include="Events\SCP3114Overhaul.cs" />
     <Compile Include="Events\SCPDamageAnnouncement.cs" />
     <Compile Include="Features\Dummy.cs" />
@@ -133,6 +135,7 @@
     <Compile Include="Misc\ICustomCommand.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Events\SCP008.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

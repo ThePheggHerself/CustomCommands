@@ -19,7 +19,7 @@ namespace CustomCommands.Commands
 
 		public string Description => "Teleports the player to a second tower on the surface";
 
-		public string[] Usage { get; } = { "player" };
+		public string[] Usage { get; } = { "%player%" };
 
 		public PlayerPermissions? Permission => null;
 		public string PermissionString => "cuscom.teleporting";

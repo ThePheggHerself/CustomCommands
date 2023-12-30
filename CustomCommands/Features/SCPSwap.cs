@@ -150,7 +150,7 @@ namespace CustomCommands.Features
                 player.TemporaryData.Add("startedasscp", true.ToString());
 
                 var count = SCPSwap.SCPsToReplace;
-                Server.SendBroadcast($"There {(count == 1 ? "is" : "are")} now {count} SCP spot{(count == 1 ? "" : "s")} available. Run \".scp\" to queue for an SCP", 5);
+                ReplaceBroadcast();
 
                 response = "You have now swapped to Human from SCP";
                 return true;
@@ -219,13 +219,42 @@ namespace CustomCommands.Features
         }
     }
 
+    [CommandHandler(typeof(RemoteAdminCommandHandler))]
+    public class TriggerScpReplace : ICustomCommand
+    {
+        public string Command => "replacescp";
 
+        public string[] Aliases => null;
+        public string Description => "Manually triggers the SCP replacement broadcast";
+
+        public string[] Usage => null;
+
+        public PlayerPermissions? Permission => null;
+
+        public string PermissionString => string.Empty;
+
+        public bool RequirePlayerSender => false;
+
+        public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
+        {
+            if (Round.Duration > TimeSpan.FromSeconds(30))
+            {
+                response = "You can only use this command within the first 30 seconds of the round";
+                return false;
+            }
+            SCPSwap.SCPsToReplace++;
+            SCPSwap.ReplaceBroadcast();
+            response = "SCP replace triggered";
+            return true;
+        }
+    }
 
 
 
     public class SCPSwap
 	{
         public static int SCPsToReplace = 0;
+        public static void ReplaceBroadcast() => Server.SendBroadcast($"There {(SCPsToReplace == 1 ? "is" : "are")} now {SCPsToReplace} SCP spot{(SCPsToReplace == 1 ? "" : "s")} available. Run \".scp\" to queue for an SCP", 5);
 
         public static RoleTypeId[] AvailableSCPs
         {
@@ -273,7 +302,7 @@ namespace CustomCommands.Features
             if (Round.Duration < TimeSpan.FromSeconds(30) && args.Player.IsSCP)
             {
                 SCPsToReplace++;
-                Server.SendBroadcast($"There {(SCPsToReplace == 1 ? "is" : "are")} now {SCPsToReplace} SCP spot{(SCPsToReplace == 1 ? "" : "s")} available. Run \".scp\" to queue for an SCP", 5);
+                ReplaceBroadcast();
             }
         }
 	}

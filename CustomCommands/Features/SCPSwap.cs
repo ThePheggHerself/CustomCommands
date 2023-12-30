@@ -80,31 +80,154 @@ namespace CustomCommands.Features
                     response = "You cannot swap as you have taken damage";
                     return false;
                 }
-                if (Round.Duration > TimeSpan.FromMinutes(1))
+                else if (Round.Duration > TimeSpan.FromMinutes(1))
                 {
                     response = "You can only swap your SCP within the first minute of a round";
                     return false;
                 }
 
                 var role = Extensions.GetRoleFromString($"SCP" + arguments.Array[1]);
-
-                if (role == RoleTypeId.None)
+                if (SCPSwap.AvailableSCPs.Contains(role))
                 {
-                    response = "No valid SCP provided";
+                    response = "You cannot swap to that SCP";
                     return false;
                 }
 
-                if (!Player.GetPlayers().Where(r => r.Role == role).Any())
+                var scpNum = player.Role.SCPNumbersFromRole();
+                var target = Player.GetPlayers().Where(r => r.Role == role).First();
+
+                if (player.TemporaryData.Contains("swapRequestSent"))
                 {
-                    player.SetRole(role);
-                    response = "You have now swapped SCP";
-                    return true;
-                }
-                else
-                {
-                    response = "There is already a player playing as that SCP";
+                    response = "You already have another pending swap request";
                     return false;
                 }
+                else if (player.TemporaryData.Contains("swapRequestRecieved"))
+                {
+                    response = "You must reject your pending request before trying to swap with another SCP";
+                    return false;
+                }
+                else if (target.TemporaryData.Contains("swapRequestSent"))
+                {
+                    response = $"{target} is trying to swap with another player";
+                    return false;
+                }
+                else if (target.TemporaryData.Contains("swapRequestRecieved"))
+                {
+                    response = $"{target} already has a pending swap request";
+                    return false;
+                }
+
+                target.ReceiveHint($"{player.Nickname} wants to swap SCP with you. Type `.sswapa` in your console to swap to SCP-{scpNum}, or type `.sswapd` to reject the request", 8);
+                target.SendConsoleMessage($"{player.Nickname} wants to swap SCP with you. Type `.sswapd` in your console to swap to SCP-{scpNum}, or type `.sswapd` to reject the request");
+                target.TemporaryData.Add("swapRequestRecieved", player.UserId);
+                player.TemporaryData.Add("swapRequestSent", target.UserId);
+
+                response = "Swap Request Sent";
+                return true;
+            }
+
+            response = "You must be an SCP to run this command";
+            return false;
+        }
+    }
+
+    [CommandHandler(typeof(ClientCommandHandler))]
+    public class cmdSCPSwapAccept : ICustomCommand
+    {
+        public string Command => "scpswapaccept";
+
+        public string[] Aliases { get; } = { "sswapa", "ssa" };
+        public string Description => "Accepts your pending swap request";
+
+        public string[] Usage => null;
+
+        public PlayerPermissions? Permission => null;
+
+        public string PermissionString => string.Empty;
+
+        public bool RequirePlayerSender => true;
+
+        public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
+        {
+            if (sender is PlayerCommandSender pSender && pSender.ReferenceHub.IsSCP() && pSender.ReferenceHub.roleManager.CurrentRole.RoleTypeId != RoleTypeId.Scp0492)
+            {
+                var player = Player.Get(pSender.ReferenceHub);
+
+                if (!player.TemporaryData.TryGet("swapRequestRecieved", out string UserId))
+                {
+                    response = "You do not have a pending swap request";
+                    return false;
+                }
+
+                if(!Player.TryGet(UserId, out Player swapper))
+                {
+                    response = "Unable to find request sender. Cancelling request";
+                    player.TemporaryData.Remove("swapRequestRecieved");
+                    return false;
+                }
+
+                RoleTypeId playerSCP = player.Role;
+                RoleTypeId swapperSCP = swapper.Role;
+
+                swapper.ReceiveHint($"{player.Nickname} accepted your swap request", 5);
+
+                player.SetRole(swapperSCP, RoleChangeReason.RemoteAdmin);
+                swapper.SetRole(playerSCP, RoleChangeReason.RemoteAdmin);
+
+                player.TemporaryData.Remove("swapRequestRecieved");
+                swapper.TemporaryData.Remove("swapRequestSent");
+
+                response = "Request accepted";
+                return true;
+            }
+
+            response = "You must be an SCP to run this command";
+            return false;
+        }
+    }
+
+    [CommandHandler(typeof(ClientCommandHandler))]
+    public class cmdSCPSwapDeny: ICustomCommand
+    {
+        public string Command => "scpswapdeny";
+
+        public string[] Aliases { get; } = { "sswapd", "ssd" };
+        public string Description => "Denies your pending swap request";
+
+        public string[] Usage => null;
+
+        public PlayerPermissions? Permission => null;
+
+        public string PermissionString => string.Empty;
+
+        public bool RequirePlayerSender => true;
+
+        public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
+        {
+            if (sender is PlayerCommandSender pSender && pSender.ReferenceHub.IsSCP() && pSender.ReferenceHub.roleManager.CurrentRole.RoleTypeId != RoleTypeId.Scp0492)
+            {
+                var player = Player.Get(pSender.ReferenceHub);
+
+                if (!player.TemporaryData.TryGet("swapRequestRecieved", out string UserId))
+                {
+                    response = "You do not have a pending swap request";
+                    return false;
+                }
+
+                if (!Player.TryGet(UserId, out Player swapper))
+                {
+                    response = "Unable to find request sender. Cancelling request";
+                    player.TemporaryData.Remove("swapRequestRecieved");
+                    return false;
+                }
+
+                swapper.ReceiveHint($"{player.Nickname} denied your swap request", 5);
+
+                player.TemporaryData.Remove("swapRequestRecieved");
+                swapper.TemporaryData.Remove("swapRequestSent");
+
+                response = "Request denied";
+                return true;
             }
 
             response = "You must be an SCP to run this command";
@@ -252,7 +375,7 @@ namespace CustomCommands.Features
 
 
     public class SCPSwap
-	{
+    {
         public static int SCPsToReplace = 0;
         public static void ReplaceBroadcast() => Server.SendBroadcast($"There {(SCPsToReplace == 1 ? "is" : "are")} now {SCPsToReplace} SCP spot{(SCPsToReplace == 1 ? "" : "s")} available. Run \".scp\" to queue for an SCP", 5);
 
@@ -262,7 +385,7 @@ namespace CustomCommands.Features
             {
                 var Roles = new List<RoleTypeId>() { RoleTypeId.Scp049, RoleTypeId.Scp079, RoleTypeId.Scp106, RoleTypeId.Scp173, RoleTypeId.Scp939 };
 
-                foreach(var r in Player.GetPlayers().Where(r => r.ReferenceHub.IsSCP()).Select(r => r.Role))
+                foreach (var r in Player.GetPlayers().Where(r => r.ReferenceHub.IsSCP()).Select(r => r.Role))
                 {
                     if (Roles.Contains(r))
                         Roles.Remove(r);
@@ -272,27 +395,27 @@ namespace CustomCommands.Features
             }
         }
 
-		public static Dictionary<string, int> Cooldown = new Dictionary<string, int>();
+        public static Dictionary<string, int> Cooldown = new Dictionary<string, int>();
 
-		[PluginEvent(ServerEventType.PlayerSpawn)]
-		public void PlayerSpawn(PlayerSpawnEvent args)
-		{
-			if (args.Player.Role.IsValidSCP() && Round.Duration < TimeSpan.FromMinutes(1) && !Plugin.EventInProgress)
-			{
-				args.Player.SendBroadcast("You can change your SCP by using the \".scpswap\" command in your console", 5);
-				args.Player.SendBroadcast("You can change back to a human role by running the \".human\" command", 5);
-			}
-		}
+        [PluginEvent(ServerEventType.PlayerSpawn)]
+        public void PlayerSpawn(PlayerSpawnEvent args)
+        {
+            if (args.Player.Role.IsValidSCP() && Round.Duration < TimeSpan.FromMinutes(1) && !Plugin.EventInProgress)
+            {
+                args.Player.SendBroadcast("You can swap SCP with another player by running the \".scpswap <SCP>\" command in your console", 5);
+                args.Player.SendBroadcast("You can change back to a human role by running the \".human\" command", 5);
+            }
+        }
 
-		[PluginEvent(ServerEventType.RoundStart)]
-		public void RoundStart(RoundStartEvent args)
-		{
+        [PluginEvent(ServerEventType.RoundStart)]
+        public void RoundStart(RoundStartEvent args)
+        {
             SCPsToReplace = 0;
-		}
+        }
 
-		[PluginEvent(ServerEventType.RoundEnd)]
-		public void RoundEnd(RoundEndEvent args)
-		{
+        [PluginEvent(ServerEventType.RoundEnd)]
+        public void RoundEnd(RoundEndEvent args)
+        {
             SCPsToReplace = 0;
         }
 
@@ -305,5 +428,5 @@ namespace CustomCommands.Features
                 ReplaceBroadcast();
             }
         }
-	}
+    }
 }

@@ -88,5 +88,14 @@ namespace CustomCommands
 		{
 			return ValidSwapSCP.Contains(role);
 		}
+
+        public static string SCPNumbersFromRole(this RoleTypeId role)
+        {
+            if (IsValidSCP(role))
+            {
+                return role.ToString().ToLower().Replace("scp", "");
+            }
+            else return string.Empty;
+        }
 	}
 }

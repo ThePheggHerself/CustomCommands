@@ -14,7 +14,7 @@ namespace CustomCommands
 {
 	public static class Extensions
 	{
-		public static bool CanRun(this ICommandSender sender, ICustomCommand cmd, ArraySegment<string> args, out string Response, out List<Player> Players, out PlayerCommandSender pSender)
+		public static bool CanRun(this ICommandSender sender, ICustomCommand cmd, ArraySegment<string> args, out string Response, out List<Player> Players, out PlayerCommandSender pSender, uint optionalParams = 0)
 		{
 			Players = new List<Player>();
 			pSender = null;
@@ -35,7 +35,7 @@ namespace CustomCommands
 				return false;
 			}
 
-			if (args.Count < cmd.Usage.Length)
+			if (args.Count < cmd.Usage.Length - optionalParams)
 			{
 				Response = $"Missing argument: {cmd.Usage[args.Count]}";
 				return false;

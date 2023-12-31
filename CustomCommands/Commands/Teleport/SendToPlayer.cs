@@ -1,13 +1,7 @@
 ﻿using CommandSystem;
-using Cryptography;
 using PluginAPI.Core;
-using PluginAPI.Core.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 using Utils;
 
 namespace CustomCommands.Commands.Teleport
@@ -47,7 +41,7 @@ namespace CustomCommands.Commands.Teleport
                 target = Player.Get(hubs.First());
             }
 
-            foreach(var plr in players)
+            foreach (var plr in players)
             {
                 plr.Position = target.Position;
             }

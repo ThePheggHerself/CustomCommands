@@ -1,5 +1,4 @@
 ﻿using CommandSystem;
-using MEC;
 using PlayerRoles;
 using PlayerRoles.RoleAssign;
 using PluginAPI.Core;
@@ -11,8 +10,6 @@ using RoundRestarting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomCommands.Features
 {
@@ -159,7 +156,7 @@ namespace CustomCommands.Features
                     return false;
                 }
 
-                if(!Player.TryGet(UserId, out Player swapper))
+                if (!Player.TryGet(UserId, out Player swapper))
                 {
                     response = "Unable to find request sender. Cancelling request";
                     player.TemporaryData.Remove("swapRequestRecieved");
@@ -187,7 +184,7 @@ namespace CustomCommands.Features
     }
 
     [CommandHandler(typeof(ClientCommandHandler))]
-    public class cmdSCPSwapDeny: ICustomCommand
+    public class cmdSCPSwapDeny : ICustomCommand
     {
         public string Command => "scpswapdeny";
 

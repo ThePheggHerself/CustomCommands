@@ -34,7 +34,7 @@ namespace CustomCommands.Events
                 lightGO.transform.position = new Vector3(135, 1024, -43);
                 NetworkServer.Spawn(lightGO);
                 surfaceLight = lightGO.GetComponent<LightSourceToy>();
-		    
+
                 surfaceLight.NetworkLightIntensity = lightIntensity;
                 surfaceLight.NetworkLightRange = 250;
                 surfaceLight.NetworkLightColor = Color.white;

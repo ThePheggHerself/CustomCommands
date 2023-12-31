@@ -1,15 +1,7 @@
 ﻿using CommandSystem;
-using InventorySystem;
-using InventorySystem.Items;
-using InventorySystem.Items.ThrowableProjectiles;
 using PluginAPI.Core;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using Mirror;
 using Utils;
 
 namespace CustomCommands.Commands.Grenade

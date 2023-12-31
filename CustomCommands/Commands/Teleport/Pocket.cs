@@ -1,40 +1,36 @@
 ﻿using CommandSystem;
 using PluginAPI.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace CustomCommands.Commands
 {
-	[CommandHandler(typeof(RemoteAdminCommandHandler))]
-	public class Pocket : ICustomCommand
-	{
-		public string Command => "pocket";
+    [CommandHandler(typeof(RemoteAdminCommandHandler))]
+    public class Pocket : ICustomCommand
+    {
+        public string Command => "pocket";
 
-		public string[] Aliases => null;
+        public string[] Aliases => null;
 
-		public string Description => "Teleports the player into the pocket dimention";
+        public string Description => "Teleports the player into the pocket dimention";
 
-		public string[] Usage { get; } = { "%player%" };
+        public string[] Usage { get; } = { "%player%" };
 
-		public PlayerPermissions? Permission => null;
-		public string PermissionString => "cuscom.teleporting";
+        public PlayerPermissions? Permission => null;
+        public string PermissionString => "cuscom.teleporting";
 
-		public bool RequirePlayerSender => false;
+        public bool RequirePlayerSender => false;
 
-		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
-		{
-			if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
-				return false;
+        public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
+        {
+            if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
+                return false;
 
-			foreach (Player player in players)
-				player.Position = Vector3.down * 1998.5f;
+            foreach (Player player in players)
+                player.Position = Vector3.down * 1998.5f;
 
-			response = $"Teleported {players.Count} {(players.Count == 1 ? "player" : "players")} to the pocket dimension";
-			return true;
-		}
-	}
+            response = $"Teleported {players.Count} {(players.Count == 1 ? "player" : "players")} to the pocket dimension";
+            return true;
+        }
+    }
 }

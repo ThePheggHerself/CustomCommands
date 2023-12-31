@@ -20,8 +20,6 @@ namespace CustomCommands.Events
 
 			PlayerRoleLoader.TryGetRoleTemplate(RoleTypeId.Scp173, out FpcStandardRoleBase pRB);
 
-			PlayerRoleLoader.TryGetRoleTemplate(RoleTypeId.ClassD, out HumanRole ragdollRole);
-
 			var dh = new FirearmDamageHandler(args.Firearm, 10);
 
 			Vector3 velocity = Vector3.zero;
@@ -38,7 +36,7 @@ namespace CustomCommands.Events
 				.SetValue(dh, velocity);
 			//.SetValue(dh, new Vector3(10, 1, 0));
 
-			BasicRagdoll basicRagdoll = UnityEngine.Object.Instantiate<BasicRagdoll>(ragdollRole.Ragdoll);
+			BasicRagdoll basicRagdoll = UnityEngine.Object.Instantiate(pRB.Ragdoll);
 			basicRagdoll.NetworkInfo = new RagdollData(null, dh, RoleTypeId.ClassD, plr.Position, plr.GameObject.transform.rotation, plr.Nickname, NetworkTime.time);
 			basicRagdoll.gameObject.AddComponent<FakeRagdoll>();
 			NetworkServer.Spawn(basicRagdoll.gameObject, (NetworkConnection)null);

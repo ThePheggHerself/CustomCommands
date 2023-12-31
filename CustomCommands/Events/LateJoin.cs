@@ -6,13 +6,13 @@ using PluginAPI.Events;
 
 namespace CustomCommands.Events
 {
-    public class LateJoin
-    {
-        [PluginEvent(ServerEventType.PlayerJoined), PluginPriority(LoadPriority.Low)]
-        public void PlayerJoin(PlayerJoinedEvent args)
-        {
-            if (!Plugin.EventInProgress && Round.IsRoundStarted && Round.Duration.TotalSeconds < 30)
-                HumanSpawner.SpawnLate(args.Player.ReferenceHub);
-        }
-    }
+	public class LateJoin
+	{
+		[PluginEvent(ServerEventType.PlayerJoined), PluginPriority(LoadPriority.Low)]
+		public void PlayerJoin(PlayerJoinedEvent args)
+		{
+			if (!Plugin.EventInProgress && Round.IsRoundStarted && Round.Duration.TotalSeconds < 30)
+				HumanSpawner.SpawnLate(args.Player.ReferenceHub);
+		}
+	}
 }

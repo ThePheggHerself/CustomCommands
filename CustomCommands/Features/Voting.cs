@@ -91,9 +91,6 @@ namespace CustomCommands.Features
 		[PluginEvent(ServerEventType.PlayerJoined), PluginPriority(LoadPriority.Lowest)]
 		public void PlayerJoin(PlayerJoinedEvent args)
 		{
-			if (!Plugin.EventInProgress && Round.IsRoundStarted && Round.Duration.TotalSeconds < 30)
-				args.Player.SetRole(RoleTypeId.ClassD, RoleChangeReason.LateJoin);
-
 			if (Plugin.VoteInProgress)
 			{
 				args.Player.SendBroadcast($"<b><color=#fa886b>[VOTE]</color></b> <color=#79b7ed>{Plugin.CurrentVoteString}</color>\nUse your console to vote now!", 15);

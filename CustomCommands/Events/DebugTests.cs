@@ -1,4 +1,4 @@
-﻿using Interactables.Interobjects.DoorUtils;
+﻿using AdminToys;
 using InventorySystem.Items;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.Attachments;
@@ -6,51 +6,29 @@ using InventorySystem.Items.ThrowableProjectiles;
 using MapGeneration;
 using Mirror;
 using PlayerRoles;
+using PlayerRoles.FirstPersonControl;
 using PlayerRoles.PlayableScps.Scp079;
-using PlayerRoles.PlayableScps.Scp106;
-using PlayerRoles.PlayableScps.Scp3114;
 using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
 using PluginAPI.Events;
-using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using YamlDotNet.Core.Tokens;
+using Utils;
 
 namespace CustomCommands.Events
 {
     public class DebugTests
     {
-        [PluginEvent(ServerEventType.PlayerDamagedShootingTarget)]
-        public void TargetDamagedEvent(PlayerDamagedShootingTargetEvent args)
-        {
-            if (args.Player.CurrentItem is Firearm firearm)
-            {
-                Log.Info($"{firearm.GetCurrentAttachmentsCode()}");
-            }
-        }
-
-        //[PluginEvent(ServerEventType.MapGenerated)]
-        public void MapGenEvent(MapGeneratedEvent args)
-        {
-            foreach (var a in NetworkClient.prefabs)
-            {
-                Log.Info($"{a.Value.name}");
-            }
-        }
-
         //[PluginEvent(ServerEventType.PlayerShotWeapon)]
         public void RagdollGun(PlayerShotWeaponEvent args)
         {
             var plr = args.Player;
+
+            PlayerRoleLoader.TryGetRoleTemplate(RoleTypeId.Scp173, out FpcStandardRoleBase pRB);
 
             PlayerRoleLoader.TryGetRoleTemplate(RoleTypeId.ClassD, out HumanRole ragdollRole);
 

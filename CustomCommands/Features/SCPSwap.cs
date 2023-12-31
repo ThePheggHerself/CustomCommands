@@ -1,4 +1,4 @@
-﻿using CommandSystem;
+using CommandSystem;
 using MEC;
 using PlayerRoles;
 using PlayerRoles.RoleAssign;
@@ -193,9 +193,9 @@ namespace CustomCommands.Features
                     response = "You were already an SCP this round";
                     return false;
                 }
-                if (Round.Duration > TimeSpan.FromSeconds(30))
+                if (Round.Duration > TimeSpan.FromSeconds(SCPSwap.LateReplace ? 120 : 30))
                 {
-                    response = "You can only swap within the first 30 seconds of the round";
+                    response = SCPSwap.LateReplace ? "You are too late to swap this round" : "You can only swap within the first 30 seconds of the round";
                     return false;
                 }
 
@@ -237,11 +237,12 @@ namespace CustomCommands.Features
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (Round.Duration > TimeSpan.FromSeconds(30))
+            if (Round.Duration > TimeSpan.FromSeconds(120))
             {
-                response = "You can only use this command within the first 30 seconds of the round";
+                response = "You can only use this command within the first 120 seconds of the round";
                 return false;
             }
+            SCPSwap.LateReplace = true;
             SCPSwap.SCPsToReplace++;
             SCPSwap.ReplaceBroadcast();
             response = "SCP replace triggered";
@@ -252,9 +253,10 @@ namespace CustomCommands.Features
 
 
     public class SCPSwap
-	{
+    {
         public static int SCPsToReplace = 0;
         public static void ReplaceBroadcast() => Server.SendBroadcast($"There {(SCPsToReplace == 1 ? "is" : "are")} now {SCPsToReplace} SCP spot{(SCPsToReplace == 1 ? "" : "s")} available. Run \".scp\" to queue for an SCP", 5);
+        public static bool LateReplace = false;
 
         public static RoleTypeId[] AvailableSCPs
         {
@@ -262,38 +264,37 @@ namespace CustomCommands.Features
             {
                 var Roles = new List<RoleTypeId>() { RoleTypeId.Scp049, RoleTypeId.Scp079, RoleTypeId.Scp106, RoleTypeId.Scp173, RoleTypeId.Scp939 };
 
-                foreach(var r in Player.GetPlayers().Where(r => r.ReferenceHub.IsSCP()).Select(r => r.Role))
-                {
-                    if (Roles.Contains(r))
-                        Roles.Remove(r);
-                }
+                foreach (var r in Player.GetPlayers().Where(r => r.ReferenceHub.IsSCP()).Select(r => r.Role))
+                    Roles.Remove(r);
 
                 return Roles.ToArray();
             }
         }
 
-		public static Dictionary<string, int> Cooldown = new Dictionary<string, int>();
+        public static Dictionary<string, int> Cooldown = new Dictionary<string, int>();
 
-		[PluginEvent(ServerEventType.PlayerSpawn)]
-		public void PlayerSpawn(PlayerSpawnEvent args)
-		{
-			if (args.Player.Role.IsValidSCP() && Round.Duration < TimeSpan.FromMinutes(1) && !Plugin.EventInProgress)
-			{
-				args.Player.SendBroadcast("You can change your SCP by using the \".scpswap\" command in your console", 5);
-				args.Player.SendBroadcast("You can change back to a human role by running the \".human\" command", 5);
-			}
-		}
+        [PluginEvent(ServerEventType.PlayerSpawn)]
+        public void PlayerSpawn(PlayerSpawnEvent args)
+        {
+            if (args.Player.Role.IsValidSCP() && Round.Duration < TimeSpan.FromMinutes(1) && !Plugin.EventInProgress)
+            {
+                args.Player.SendBroadcast("You can change your SCP by using the \".scpswap\" command in your console", 5);
+                args.Player.SendBroadcast("You can change back to a human role by running the \".human\" command", 5);
+            }
+        }
 
-		[PluginEvent(ServerEventType.RoundStart)]
-		public void RoundStart(RoundStartEvent args)
-		{
+        [PluginEvent(ServerEventType.RoundStart)]
+        public void RoundStart(RoundStartEvent args)
+        {
             SCPsToReplace = 0;
-		}
+            LateReplace = false;
+        }
 
-		[PluginEvent(ServerEventType.RoundEnd)]
-		public void RoundEnd(RoundEndEvent args)
-		{
+        [PluginEvent(ServerEventType.RoundEnd)]
+        public void RoundEnd(RoundEndEvent args)
+        {
             SCPsToReplace = 0;
+            LateReplace = false;
         }
 
         [PluginEvent(ServerEventType.PlayerLeft)]
@@ -305,5 +306,5 @@ namespace CustomCommands.Features
                 ReplaceBroadcast();
             }
         }
-	}
+    }
 }

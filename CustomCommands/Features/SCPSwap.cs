@@ -259,7 +259,7 @@ namespace CustomCommands.Features
 					response = "You cannot swap as you have taken damage";
 					return false;
 				}
-				if (Round.Duration > TimeSpan.FromSeconds(30))
+				if (Round.Duration > TimeSpan.FromMinutes(1))
 				{
 					response = "You can only swap from SCP within the first 30 seconds of a round";
 					return false;
@@ -311,9 +311,14 @@ namespace CustomCommands.Features
 					response = "You were already an SCP this round";
 					return false;
 				}
-				if (Round.Duration > TimeSpan.FromSeconds(30))
+				if (Round.Duration > TimeSpan.FromMinutes(1.5f))
 				{
-					response = "You can only swap within the first 30 seconds of the round";
+					response = "You can only swap within the first 90 seconds of the round";
+					return false;
+				}
+				if (SCPSwap.Cooldown.TryGetValue(player.UserId, out int roundCount) && (RoundRestart.UptimeRounds - roundCount) < 3)
+				{
+					response = "You have already recently replaced an SCP and are still on cooldown";
 					return false;
 				}
 

@@ -12,14 +12,19 @@ namespace CustomCommands
 {
 	public static class Extensions
 	{
-		public static bool CanRun(this ICommandSender sender, ICustomCommand cmd, ArraySegment<string> args, out string Response, out List<Player> Players, out PlayerCommandSender pSender)
+		public static bool CanRun(this ICommandSender sender, ICustomCommand cmd, ArraySegment<string> args, out string Response, out List<Player> Players, out PlayerCommandSender PlrCmdSender)
 		{
 			Players = new List<Player>();
-			pSender = null;
-			if (cmd.RequirePlayerSender && !(sender is PlayerCommandSender))
+			PlrCmdSender = null;
+
+			if (cmd.RequirePlayerSender)
 			{
-				Response = "You must be a player to run this command";
-				return false;
+				if (!(sender is PlayerCommandSender pSender))
+				{
+					Response = "You must be a player to run this command";
+					return false;
+				}
+				PlrCmdSender = pSender;
 			}
 
 			if (cmd.Permission != null && !sender.CheckPermission((PlayerPermissions)cmd.Permission))

@@ -15,7 +15,7 @@ namespace CustomCommands.Events
 {
 	public class DebugTests
 	{
-		[PluginEvent(ServerEventType.PlayerShotWeapon)]
+		//[PluginEvent(ServerEventType.PlayerShotWeapon)]
 		public void RagdollGun(PlayerShotWeaponEvent args)
 		{
 			var plr = args.Player;

@@ -49,6 +49,7 @@ namespace CustomCommands
 			EventManager.RegisterEvents<SurfaceLightingFix>(this);
 			EventManager.RegisterEvents<TutorialFixes>(this);
 			EventManager.RegisterEvents<Features.Voting>(this);
+			EventManager.RegisterEvents<Features.SpecialWeapons>(this);
 			//EventManager.RegisterEvents<SCP3114Overhaul>(this);
 
 			RagdollManager.OnRagdollSpawned += MiscEvents.RagdollManager_OnRagdollSpawned;

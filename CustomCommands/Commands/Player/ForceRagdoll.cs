@@ -23,7 +23,7 @@ namespace CustomCommands.Commands.Player
 
         public string Description => "Ragdolls a specified player";
 
-        public string[] Usage { get; } = { "%player%", "[force multiplyer = 0]", "[ragdoll time = 3]" };
+        public string[] Usage { get; } = { "%player%", "force multiplyer", "ragdoll time (s)" };
 
         public PlayerPermissions? Permission => PlayerPermissions.Effects;
         public string PermissionString => string.Empty;
@@ -32,7 +32,7 @@ namespace CustomCommands.Commands.Player
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (!sender.CanRun(this, arguments, out response, out var players, out var pSender, 2))
+            if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
                 return false;
 
             float forceMultiplyer = 0;

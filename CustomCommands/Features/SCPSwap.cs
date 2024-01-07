@@ -115,7 +115,7 @@ namespace CustomCommands.Features
 				}
 
 				target.ReceiveHint($"{player.Nickname} wants to swap SCP with you. Type `.sswapa` in your console to swap to SCP-{scpNum}, or type `.sswapd` to reject the request", 8);
-				target.SendConsoleMessage($"{player.Nickname} wants to swap SCP with you. Type `.sswapd` in your console to swap to SCP-{scpNum}, or type `.sswapd` to reject the request");
+				target.SendConsoleMessage($"{player.Nickname} wants to swap SCP with you. Type `.sswapa` in your console to swap to SCP-{scpNum}, or type `.sswapd` to reject the request");
 				target.TemporaryData.Add("swapRequestRecieved", player.UserId);
 				player.TemporaryData.Add("swapRequestSent", target.UserId);
 
@@ -261,7 +261,7 @@ namespace CustomCommands.Features
 				}
 				if (Round.Duration > TimeSpan.FromMinutes(1))
 				{
-					response = "You can only swap from SCP within the first 30 seconds of a round";
+					response = "You can only swap from SCP within the first 1 minute of a round";
 					return false;
 				}
 
@@ -311,7 +311,7 @@ namespace CustomCommands.Features
 					response = "You were already an SCP this round";
 					return false;
 				}
-				if (Round.Duration > TimeSpan.FromMinutes(1.5f))
+				if (Round.Duration > TimeSpan.FromSeconds(90))
 				{
 					response = "You can only swap within the first 90 seconds of the round";
 					return false;
@@ -417,7 +417,7 @@ namespace CustomCommands.Features
 		[PluginEvent(ServerEventType.PlayerLeft)]
 		public void PlayerLeave(PlayerLeftEvent args)
 		{
-			if (Round.Duration < TimeSpan.FromSeconds(30) && args.Player.IsSCP)
+			if (Round.Duration < TimeSpan.FromMinutes(1) && args.Player.IsSCP)
 			{
 				SCPsToReplace++;
 				ReplaceBroadcast();

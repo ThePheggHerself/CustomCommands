@@ -12,7 +12,7 @@ using System.Reflection;
 using UnityEngine;
 
 
-namespace CustomCommands.Commands.Player
+namespace CustomCommands.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class TripCommand : ICustomCommand

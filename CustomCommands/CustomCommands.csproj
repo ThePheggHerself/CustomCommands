@@ -107,6 +107,7 @@
     <Compile Include="Commands\Events\Hush.cs" />
     <Compile Include="Commands\Events\Infection.cs" />
     <Compile Include="Commands\Misc\MuteCheck.cs" />
+    <Compile Include="Commands\Player\ForceRagdoll.cs" />
     <Compile Include="Commands\Player\PlayerDestroy.cs" />
     <Compile Include="Commands\Player\PlayerLock.cs" />
     <Compile Include="Commands\Grenade\Flash.cs" />

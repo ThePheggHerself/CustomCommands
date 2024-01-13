@@ -374,21 +374,25 @@ namespace CustomCommands.Features
 		public static int SCPsToReplace = 0;
 		public static void ReplaceBroadcast() => Server.SendBroadcast($"There {(SCPsToReplace == 1 ? "is" : "are")} now {SCPsToReplace} SCP spot{(SCPsToReplace == 1 ? "" : "s")} available. Run \".scp\" to queue for an SCP", 5);
 
-		public static RoleTypeId[] AvailableSCPs
-		{
-			get
-			{
-				var Roles = new List<RoleTypeId>() { RoleTypeId.Scp049, RoleTypeId.Scp079, RoleTypeId.Scp106, RoleTypeId.Scp173, RoleTypeId.Scp939 };
+        public static RoleTypeId[] AvailableSCPs
+        {
+            get
+            {
+                var Roles = new List<RoleTypeId>() { RoleTypeId.Scp049, RoleTypeId.Scp079, RoleTypeId.Scp106, RoleTypeId.Scp173, RoleTypeId.Scp939 };
 
-				foreach (var r in Player.GetPlayers().Where(r => r.ReferenceHub.IsSCP()).Select(r => r.Role))
-				{
-					if (Roles.Contains(r))
-						Roles.Remove(r);
-				}
+                var scpRoles = Player.GetPlayers().Where(r => r.ReferenceHub.IsSCP()).Select(r => r.Role);
+                if (scpRoles.Any())
+                    foreach (var r in scpRoles)
+                    {
+                        if (Roles.Contains(r))
+                            Roles.Remove(r);
+                    }
+                else
+                    Roles.Remove(RoleTypeId.Scp079);
 
-				return Roles.ToArray();
-			}
-		}
+                return Roles.ToArray();
+            }
+        }
 
 		public static Dictionary<string, int> Cooldown = new Dictionary<string, int>();
 

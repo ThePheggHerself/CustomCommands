@@ -6,22 +6,25 @@ using RemoteAdmin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utils;
 
 namespace CustomCommands
 {
 	public static class Extensions
 	{
-		public static bool CanRun(this ICommandSender sender, ICustomCommand cmd, ArraySegment<string> args, out string Response, out List<Player> Players, out PlayerCommandSender pSender)
+		public static bool CanRun(this ICommandSender sender, ICustomCommand cmd, ArraySegment<string> args, out string Response, out List<Player> Players, out PlayerCommandSender PlrCmdSender)
 		{
 			Players = new List<Player>();
-			pSender = null;
-			if (cmd.RequirePlayerSender && !(sender is PlayerCommandSender pS))
+			PlrCmdSender = null;
+
+			if (cmd.RequirePlayerSender)
 			{
-				Response = "You must be a player to run this command";
-				return false;
+				if (!(sender is PlayerCommandSender pSender))
+				{
+					Response = "You must be a player to run this command";
+					return false;
+				}
+				PlrCmdSender = pSender;
 			}
 
 			if (cmd.Permission != null && !sender.CheckPermission((PlayerPermissions)cmd.Permission))
@@ -45,7 +48,7 @@ namespace CustomCommands
 			{
 				var index = cmd.Usage.IndexOf("%player%");
 
-				var hubs = RAUtils.ProcessPlayerIdOrNamesList(args, index, out string[] newArgs, false);
+				var hubs = RAUtils.ProcessPlayerIdOrNamesList(args, index, out _, false);
 
 				if (hubs.Count < 1)
 				{
@@ -65,19 +68,17 @@ namespace CustomCommands
 			return true;
 		}
 
-        public static RoleTypeId[] ValidSwapSCP = new RoleTypeId[]
-        {
-            RoleTypeId.Scp173, RoleTypeId.Scp049, RoleTypeId.Scp079,RoleTypeId.Scp096, RoleTypeId.Scp106,RoleTypeId.Scp939, RoleTypeId.Scp3114
-        };
+		public static RoleTypeId[] ValidSwapSCP = new RoleTypeId[]
+		{
+			RoleTypeId.Scp173, RoleTypeId.Scp049, RoleTypeId.Scp079,RoleTypeId.Scp096, RoleTypeId.Scp106,RoleTypeId.Scp939, RoleTypeId.Scp3114
+		};
 
 		public static RoleTypeId GetRoleFromString(string role)
 		{
-			var roles = Enum.GetNames(typeof(RoleTypeId));
-
 			if (Enum.TryParse(role, true, out RoleTypeId roleType))
 			{
-                if(!IsValidSCP(roleType))
-                    return RoleTypeId.None;
+				if (!IsValidSCP(roleType))
+					return RoleTypeId.None;
 
 				return roleType;
 			}
@@ -87,6 +88,15 @@ namespace CustomCommands
 		public static bool IsValidSCP(this RoleTypeId role)
 		{
 			return ValidSwapSCP.Contains(role);
+		}
+
+		public static string SCPNumbersFromRole(this RoleTypeId role)
+		{
+			if (IsValidSCP(role))
+			{
+				return role.ToString().ToLower().Replace("scp", "");
+			}
+			else return string.Empty;
 		}
 	}
 }

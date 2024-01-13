@@ -1,10 +1,6 @@
 ﻿using CommandSystem;
-using PluginAPI.Core;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomCommands.Commands.Misc
 {
@@ -48,9 +44,9 @@ namespace CustomCommands.Commands.Misc
 				details = kVP.Key;
 			}
 
-			if(details != null)
+			if (details != null)
 			{
-				response = $"User {searchTerm} is banned. Banned until: {new DateTime(details.Expires).ToString("dd/MM/yyyy HH:mm")}";
+				response = $"User {searchTerm} is banned. Banned until: {new DateTime(details.Expires):dd/MM/yyyy HH:mm}";
 			}
 			else
 			{

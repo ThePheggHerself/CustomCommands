@@ -1,11 +1,6 @@
 ﻿using CommandSystem;
-using NWAPIPermissionSystem;
 using PluginAPI.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace CustomCommands.Commands
@@ -19,7 +14,7 @@ namespace CustomCommands.Commands
 
 		public string Description => "Teleports the player to a second tower on the surface";
 
-		public string[] Usage { get; } = { "player" };
+		public string[] Usage { get; } = { "%player%" };
 
 		public PlayerPermissions? Permission => null;
 		public string PermissionString => "cuscom.teleporting";
@@ -28,7 +23,7 @@ namespace CustomCommands.Commands
 
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
+			if (!sender.CanRun(this, arguments, out response, out var players, out _))
 				return false;
 
 			foreach (Player plr in players)

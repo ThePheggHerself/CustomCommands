@@ -1,11 +1,7 @@
 ﻿using CommandSystem;
-using Interactables.Interobjects.DoorUtils;
+using CustomCommands.Features;
 using PluginAPI.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomCommands.Commands.Misc
 {
@@ -37,7 +33,7 @@ namespace CustomCommands.Commands.Misc
 			}
 
 			var msg = string.Join(" ", arguments).Replace(Command, string.Empty).Trim();
-			Plugin.SetVote(VoteType.AdminVote, msg);
+			Voting.SetVote(VoteType.AdminVote, msg);
 
 			foreach (var a in Player.GetPlayers())
 			{
@@ -47,7 +43,7 @@ namespace CustomCommands.Commands.Misc
 
 			MEC.Timing.CallDelayed(3 * 60, () =>
 			{
-				Plugin.EndVote();
+				Voting.EndVote();
 
 			});
 			response = "Vote has been started";

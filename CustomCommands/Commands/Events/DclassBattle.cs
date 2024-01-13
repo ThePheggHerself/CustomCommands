@@ -1,20 +1,11 @@
 ﻿using CommandSystem;
-using InventorySystem.Items.ThrowableProjectiles;
-using InventorySystem.Items;
+using InventorySystem.Items.Firearms;
+using InventorySystem.Items.Firearms.Attachments;
+using MapGeneration;
 using PluginAPI.Core;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using RoundRestarting;
-using GameCore;
-using MapGeneration;
-using InventorySystem.Items.Usables.Scp330;
-using InventorySystem.Items.Firearms;
-using Log = PluginAPI.Core.Log;
-using InventorySystem.Items.Firearms.Attachments;
 
 namespace CustomCommands.Commands
 {

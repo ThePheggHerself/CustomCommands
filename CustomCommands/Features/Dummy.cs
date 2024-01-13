@@ -3,141 +3,138 @@ using MEC;
 using Mirror;
 using PluginAPI.Core;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace CustomCommands.Features
 {
-    [CommandHandler(typeof(RemoteAdminCommandHandler))]
-    public class DummyCreate : ICustomCommand
-    {
-        public string Command => "dummycreate";
+	[CommandHandler(typeof(RemoteAdminCommandHandler))]
+	public class DummyCreate : ICustomCommand
+	{
+		public string Command => "dummycreate";
 
-        public string[] Aliases => null;
+		public string[] Aliases => null;
 
-        public string Description => "Creates a dummy player";
+		public string Description => "Creates a dummy player";
 
-        public string[] Usage { get; } = { "name" };
+		public string[] Usage { get; } = { "name" };
 
-        public PlayerPermissions? Permission => null;
-        public string PermissionString => "cuscom.dummyc";
+		public PlayerPermissions? Permission => null;
+		public string PermissionString => "cuscom.dummyc";
 
-        public bool RequirePlayerSender => false;
+		public bool RequirePlayerSender => false;
 
-        public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
-        {
-            if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
-                return false;
+		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
+		{
+			if (!sender.CanRun(this, arguments, out response, out _, out _))
+				return false;
 
-            var dummy = DummyManager.CreateDummy(arguments.ElementAt(0));
+			var dummy = DummyManager.CreateDummy(arguments.ElementAt(0));
 
-            response = $"Dummy '{dummy.authManager.UserId}' created";
+			response = $"Dummy '{dummy.authManager.UserId}' created";
 
-            return true;
-        }
-    }
+			return true;
+		}
+	}
 
-    [CommandHandler(typeof(RemoteAdminCommandHandler))]
-    public class DummyDestroy : ICustomCommand
-    {
-        public string Command => "dummydestroy";
+	[CommandHandler(typeof(RemoteAdminCommandHandler))]
+	public class DummyDestroy : ICustomCommand
+	{
+		public string Command => "dummydestroy";
 
-        public string[] Aliases => null;
+		public string[] Aliases => null;
 
-        public string Description => "Destroys a dummy player";
+		public string Description => "Destroys a dummy player";
 
-        public string[] Usage { get; } = { "User ID" };
+		public string[] Usage { get; } = { "User ID" };
 
-        public PlayerPermissions? Permission => null;
-        public string PermissionString => "cuscom.dummyd";
+		public PlayerPermissions? Permission => null;
+		public string PermissionString => "cuscom.dummyd";
 
-        public bool RequirePlayerSender => false;
+		public bool RequirePlayerSender => false;
 
-        public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
-        {
-            if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
-                return false;
+		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
+		{
+			if (!sender.CanRun(this, arguments, out response, out _, out _))
+				return false;
 
-            if (DummyManager.DestroyDummy(arguments.ElementAt(0)))
-            {
-                response = $"Dummy '{arguments.ElementAt(0)}' destroyed";
-                return true;
-            }
-            else
-            {
-                response = $"No dummy located";
-                return false;
-            }
-        }
-    }
+			if (DummyManager.DestroyDummy(arguments.ElementAt(0)))
+			{
+				response = $"Dummy '{arguments.ElementAt(0)}' destroyed";
+				return true;
+			}
+			else
+			{
+				response = $"No dummy located";
+				return false;
+			}
+		}
+	}
 
-    public static class DummyManager
-    {
-        public static int DummyID = 0;
+	public static class DummyManager
+	{
+		public static int DummyID = 0;
 
-        public static ReferenceHub CreateDummy(string Name)
-        {
-            var dummy = GameObject.Instantiate(NetworkManager.singleton.playerPrefab);
-            DummyID++;
-            int id = DummyID;
+		public static ReferenceHub CreateDummy(string Name)
+		{
+			var dummy = GameObject.Instantiate(NetworkManager.singleton.playerPrefab);
+			DummyID++;
+			int id = DummyID;
 
-            var dcon = new DummyConnection(id);
-            var hub = dummy.GetComponent<ReferenceHub>();
+			var dcon = new DummyConnection(id);
+			var hub = dummy.GetComponent<ReferenceHub>();
 
-            NetworkServer.AddPlayerForConnection(dcon, dummy);
+			NetworkServer.AddPlayerForConnection(dcon, dummy);
 
-            try
-            {
-                hub.authManager.NetworkSyncedUserId = $"dummy{id}@server";
-                hub.nicknameSync.Network_myNickSync = Name;
-                hub.authManager.UserId = $"dummy{id}@server";
-            }
-            catch (Exception e)
-            {
+			try
+			{
+				hub.authManager.NetworkSyncedUserId = $"dummy{id}@server";
+				hub.nicknameSync.Network_myNickSync = Name;
+				hub.authManager.UserId = $"dummy{id}@server";
+			}
+			catch (Exception)
+			{
 
-            }
+			}
 
-            return hub;
-        }
+			return hub;
+		}
 
-        public static bool DestroyDummy(string ID)
-        {
-            foreach (var plr in Player.GetPlayers())
-            {
-                if (plr.UserId == ID)
-                {
-                    plr.Kill();
+		public static bool DestroyDummy(string ID)
+		{
+			foreach (var plr in Player.GetPlayers())
+			{
+				if (plr.UserId == ID)
+				{
+					plr.Kill();
 
-                    Timing.CallDelayed(0.2f, () =>
-                    {
-                        NetworkServer.RemovePlayerForConnection(plr.ReferenceHub.connectionToClient, true);
-                    });
+					Timing.CallDelayed(0.2f, () =>
+					{
+						NetworkServer.RemovePlayerForConnection(plr.ReferenceHub.connectionToClient, true);
+					});
 
-                    return true;
-                }
-            }
+					return true;
+				}
+			}
 
-            return false;
-        }
-    }
+			return false;
+		}
+	}
 
-    public class DummyConnection : NetworkConnectionToClient
-    {
-        public DummyConnection(int networkConnectionId) : base(networkConnectionId)
-        {
-        }
+	public class DummyConnection : NetworkConnectionToClient
+	{
+		public DummyConnection(int networkConnectionId) : base(networkConnectionId)
+		{
+		}
 
-        public override string address => "AtTheInn";
-        public override void Send(ArraySegment<byte> segment, int channelId = 0)
-        {
+		public override string address => "AtTheInn";
+		public override void Send(ArraySegment<byte> segment, int channelId = 0)
+		{
 
-        }
-        public override void Disconnect()
-        {
-            NetworkServer.RemovePlayerForConnection(identity.gameObject.GetComponent<ReferenceHub>().connectionToServer, true);
-        }
-    }
+		}
+		public override void Disconnect()
+		{
+			NetworkServer.RemovePlayerForConnection(identity.gameObject.GetComponent<ReferenceHub>().connectionToServer, true);
+		}
+	}
 }

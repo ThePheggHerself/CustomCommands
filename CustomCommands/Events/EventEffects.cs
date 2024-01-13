@@ -5,20 +5,16 @@ using PlayerRoles;
 using PlayerStatsSystem;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
-using PluginAPI.Core.Zones.Heavy;
 using PluginAPI.Enums;
 using PluginAPI.Events;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomCommands.Events
 {
 	public class EventEffects
 	{
-		List<Scp079Generator> generators = new List<Scp079Generator>();
+		readonly List<Scp079Generator> generators = new List<Scp079Generator>();
 
 		[PluginEvent(ServerEventType.RoundRestart)]
 		public void RoundRestart()
@@ -28,6 +24,7 @@ namespace CustomCommands.Events
 		}
 
 		[PluginEvent(ServerEventType.TeamRespawn)]
+
 		public bool TeamRespawn(TeamRespawnEvent args)
 		{
 			if (Plugin.EventInProgress)
@@ -117,12 +114,12 @@ namespace CustomCommands.Events
 		{
 			if (Plugin.EventInProgress)
 			{
-                if (Plugin.CurrentEvent == EventType.SnowballFight)
-                {
-                    return false;
-                }
+				if (Plugin.CurrentEvent == EventType.SnowballFight)
+				{
+					return false;
+				}
 
-                if (Plugin.CurrentEvent == EventType.Hush)
+				if (Plugin.CurrentEvent == EventType.Hush)
 				{
 					if (args.Elevator.AssignedGroup == ElevatorManager.ElevatorGroup.Nuke)
 						return true;
@@ -148,7 +145,7 @@ namespace CustomCommands.Events
 		[PluginEvent(ServerEventType.PlayerDying), PluginPriority(LoadPriority.Highest)]
 		public bool PlayerDying(PlayerDyingEvent args)
 		{
-			if (Plugin.CurrentEvent == EventType.Infection && args.DamageHandler is AttackerDamageHandler aDH)
+			if (Plugin.CurrentEvent == EventType.Infection && args.DamageHandler is AttackerDamageHandler)
 			{
 				args.Player.ReferenceHub.roleManager.ServerSetRole(args.Attacker.Role, RoleChangeReason.RemoteAdmin, RoleSpawnFlags.AssignInventory);
 
@@ -158,29 +155,29 @@ namespace CustomCommands.Events
 			return true;
 		}
 
-        [PluginEvent(ServerEventType.PlayerDeath)]
-        public void PlayerDeath(PlayerDeathEvent args)
-        {
-            if (Plugin.CurrentEvent == EventType.SnowballFight)
-            {
-                args.Attacker.Heal(15);
-            }
-        }
+		[PluginEvent(ServerEventType.PlayerDeath)]
+		public void PlayerDeath(PlayerDeathEvent args)
+		{
+			if (Plugin.CurrentEvent == EventType.SnowballFight)
+			{
+				args.Attacker.Heal(15);
+			}
+		}
 
-        [PluginEvent(ServerEventType.PlayerThrowProjectile)]
-        public void PlayerThrowProjectile(PlayerThrowProjectileEvent args)
-        {
+		[PluginEvent(ServerEventType.PlayerThrowProjectile)]
+		public void PlayerThrowProjectile(PlayerThrowProjectileEvent args)
+		{
 
-            if (Plugin.CurrentEvent == EventType.SnowballFight)
-            {
-                if (args.Item.ItemTypeId == ItemType.Snowball)
-                    args.Thrower.AddItem(ItemType.Snowball);
-            }
-        }
-
-    
+			if (Plugin.CurrentEvent == EventType.SnowballFight)
+			{
+				if (args.Item.ItemTypeId == ItemType.Snowball)
+					args.Thrower.AddItem(ItemType.Snowball);
+			}
+		}
 
 
 
-    }
+
+
+	}
 }

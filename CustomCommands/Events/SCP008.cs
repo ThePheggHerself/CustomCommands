@@ -1,22 +1,16 @@
 ﻿using InventorySystem.Items.Pickups;
-using MapGeneration.Distributors;
 using MapGeneration;
+using MapGeneration.Distributors;
 using Mirror;
+using PlayerRoles.PlayableScps.Scp079;
+using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
 using PluginAPI.Events;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using PluginAPI.Core;
-using TMPro;
-using PlayerRoles.PlayableScps.Scp079;
-using UnityEngine.AI;
-using Utils;
 
 namespace CustomCommands.Events
 {
@@ -40,12 +34,10 @@ namespace CustomCommands.Events
 
 			pedestal.AddComponent<SCP008Pedestal>();
 			pedestal.AddComponent<Scp079Speaker>();
-
-			//Log.Info(content.Count.ToString());
 		}
 
 		[PluginEvent(ServerEventType.RoundStart)]
-		public void roundstart(RoundStartEvent args)
+		public void RoundRestart(RoundStartEvent args)
 		{
 			foreach (var a in UnityEngine.Object.FindObjectsOfType<PedestalScpLocker>())
 			{
@@ -69,7 +61,7 @@ namespace CustomCommands.Events
 		{
 			if (args.Item.ItemTypeId == ItemType.SCP1853)
 			{
-				if (args.Item.gameObject.TryGetComponent<SCP008Item>(out SCP008Item item))
+				if (args.Item.gameObject.TryGetComponent<SCP008Item>(out _))
 				{
 					if (!args.Player.TemporaryData.Contains("scp008infection"))
 					{

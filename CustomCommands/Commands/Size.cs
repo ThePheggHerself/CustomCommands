@@ -2,12 +2,7 @@
 using Mirror;
 using PluginAPI.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace CustomCommands.Commands
 {
@@ -26,7 +21,7 @@ namespace CustomCommands.Commands
 
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			if (!sender.CanRun(this, arguments, out response, out var players, out var pSender))
+			if (!sender.CanRun(this, arguments, out response, out var players, out _))
 				return false;
 
 			if (!float.TryParse(arguments.Array[2], out float x) || !float.TryParse(arguments.Array[3], out float y) || !float.TryParse(arguments.Array[4], out float z))
@@ -37,12 +32,12 @@ namespace CustomCommands.Commands
 
 			var svrPlrs = Server.GetPlayers();
 
-			foreach(var p in players)
+			foreach (var p in players)
 			{
 				var nId = p.ReferenceHub.networkIdentity;
 				p.ReferenceHub.gameObject.transform.localScale = new UnityEngine.Vector3(1 * x, 1 * y, 1 * z);
 
-				foreach(var player in svrPlrs)
+				foreach (var player in svrPlrs)
 				{
 					NetworkConnection nConn = player.ReferenceHub.connectionToClient;
 

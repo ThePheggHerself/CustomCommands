@@ -1,14 +1,14 @@
 ﻿using MapGeneration;
+using MEC;
 using Mirror;
+using PlayerRoles;
 using PlayerRoles.PlayableScps.Scp3114;
 using PlayerRoles.Ragdolls;
-using PlayerRoles;
+using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
 using PluginAPI.Events;
 using UnityEngine;
-using PluginAPI.Core;
-using MEC;
 
 namespace CustomCommands.Events
 {
@@ -28,7 +28,7 @@ namespace CustomCommands.Events
 					args.Player.Position = pos;
 					var scpid = (args.Player.RoleBase as Scp3114Role);
 					scpid.FpcModule.MouseLook.CurrentHorizontal = rot;
-				});				
+				});
 
 				//Timing.CallDelayed(45f, () =>
 				//{
@@ -41,14 +41,12 @@ namespace CustomCommands.Events
 		{
 			#region Spawns Ragdoll
 
-			RoomIdentifier roomIdentifier;
-			RoomIdUtils.TryFindRoom(RoomName.EzEvacShelter, FacilityZone.Entrance, RoomShape.Endroom, out roomIdentifier);
+			RoomIdUtils.TryFindRoom(RoomName.EzEvacShelter, FacilityZone.Entrance, RoomShape.Endroom, out RoomIdentifier roomIdentifier);
 			Transform transform = roomIdentifier.transform;
 
 			RoleTypeId role = new System.Random().Next(0, 2) == 1 ? RoleTypeId.ClassD : RoleTypeId.Scientist;
 
-			HumanRole humanRole;
-			PlayerRoleLoader.TryGetRoleTemplate<HumanRole>(role, out humanRole);
+			PlayerRoleLoader.TryGetRoleTemplate<HumanRole>(role, out HumanRole humanRole);
 
 			BasicRagdoll basicRagdoll = UnityEngine.Object.Instantiate<BasicRagdoll>(humanRole.Ragdoll);
 			basicRagdoll.NetworkInfo = new RagdollData(null, new Scp3114DamageHandler(basicRagdoll, true), role, transform.position, transform.rotation, plr.Nickname, NetworkTime.time);

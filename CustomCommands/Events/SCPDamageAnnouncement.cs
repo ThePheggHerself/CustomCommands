@@ -1,13 +1,10 @@
 ﻿using PlayerStatsSystem;
-using PluginAPI.Core.Attributes;
 using PluginAPI.Core;
+using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
 using PluginAPI.Events;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomCommands.Events
 {
@@ -16,7 +13,7 @@ namespace CustomCommands.Events
 		public static Dictionary<string, float> ScpDamage = new Dictionary<string, float>();
 
 		[PluginEvent(ServerEventType.PlayerDamage)]
-		public void damageCount(PlayerDamageEvent args)
+		public void PlayerDamageEvent(PlayerDamageEvent args)
 		{
 			var plr = args.Player;
 			var trgt = args.Target;
@@ -29,7 +26,7 @@ namespace CustomCommands.Events
 		}
 
 		[PluginEvent(ServerEventType.RoundEnd)]
-		public void roundEnd(RoundEndEvent args)
+		public void RoundEndEvent(RoundEndEvent args)
 		{
 			var maxDmg = ScpDamage.Max(x => x.Value);
 			var kvp = ScpDamage.FirstOrDefault(x => x.Value == maxDmg);

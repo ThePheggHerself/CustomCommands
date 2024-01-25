@@ -311,11 +311,12 @@ namespace CustomCommands.Features
 					response = "You were already an SCP this round";
 					return false;
 				}
-				if (Round.Duration > TimeSpan.FromSeconds(90))
+				if (Round.Duration > TimeSpan.FromSeconds(90) && !SCPSwap.LateTimer || Round.Duration > TimeSpan.FromSeconds(120))
 				{
 					response = "You can only swap within the first 90 seconds of the round";
 					return false;
-				}
+				} 
+
 				if (SCPSwap.Cooldown.TryGetValue(player.UserId, out int roundCount) && (RoundRestart.UptimeRounds - roundCount) < 3)
 				{
 					response = "You have already recently replaced an SCP and are still on cooldown";
@@ -362,6 +363,7 @@ namespace CustomCommands.Features
 		{
 			SCPSwap.SCPsToReplace++;
 			SCPSwap.ReplaceBroadcast();
+			SCPSwap.LateTimer = true;
 			response = "SCP replace triggered";
 			return true;
 		}
@@ -373,6 +375,7 @@ namespace CustomCommands.Features
 	{
 		public static int SCPsToReplace = 0;
 		public static void ReplaceBroadcast() => Server.SendBroadcast($"There {(SCPsToReplace == 1 ? "is" : "are")} now {SCPsToReplace} SCP spot{(SCPsToReplace == 1 ? "" : "s")} available. Run \".scp\" to queue for an SCP", 5);
+		public static bool LateTimer = false;
 
         public static RoleTypeId[] AvailableSCPs
         {
@@ -410,12 +413,15 @@ namespace CustomCommands.Features
 		public void RoundStart(RoundStartEvent args)
 		{
 			SCPsToReplace = 0;
-		}
+            LateTimer = false;
 
-		[PluginEvent(ServerEventType.RoundEnd)]
+        }
+
+        [PluginEvent(ServerEventType.RoundEnd)]
 		public void RoundEnd(RoundEndEvent args)
 		{
 			SCPsToReplace = 0;
+			LateTimer = false;
 		}
 
 		[PluginEvent(ServerEventType.PlayerLeft)]

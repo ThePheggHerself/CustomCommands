@@ -132,6 +132,7 @@
     <Compile Include="Features\SCPSwap.cs" />
     <Compile Include="Events\SurfaceLightingFix.cs" />
     <Compile Include="Events\TutorialFixes.cs" />
+    <Compile Include="Features\SendHint.cs" />
     <Compile Include="Features\SpecialWeapons.cs" />
     <Compile Include="Features\Voting.cs" />
     <Compile Include="Misc\Extensions.cs" />

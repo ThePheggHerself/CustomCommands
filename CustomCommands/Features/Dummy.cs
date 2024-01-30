@@ -2,6 +2,7 @@
 using MEC;
 using Mirror;
 using PluginAPI.Core;
+using PluginAPI.Events;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -68,6 +69,18 @@ namespace CustomCommands.Features
 				response = $"No dummy located";
 				return false;
 			}
+		}
+	}
+
+	public class DummyEvents
+	{
+		[PluginAPI.Core.Attributes.PluginEvent]
+		public void WaitingForPlayers(WaitingForPlayersEvent args)
+		{
+			DummyManager.DummyID = 0;
+
+			DummyManager.CreateDummy("Steve");
+			Round.IsLocked = true;
 		}
 	}
 

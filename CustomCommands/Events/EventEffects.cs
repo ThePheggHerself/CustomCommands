@@ -163,21 +163,5 @@ namespace CustomCommands.Events
 				args.Attacker.Heal(15);
 			}
 		}
-
-		[PluginEvent(ServerEventType.PlayerThrowProjectile)]
-		public void PlayerThrowProjectile(PlayerThrowProjectileEvent args)
-		{
-
-			if (Plugin.CurrentEvent == EventType.SnowballFight)
-			{
-				if (args.Item.ItemTypeId == ItemType.Snowball)
-					args.Thrower.AddItem(ItemType.Snowball);
-			}
-		}
-
-
-
-
-
 	}
 }

@@ -34,7 +34,7 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>G:\SteamLibrary\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -128,6 +128,8 @@
     <Compile Include="Events\NameFix.cs" />
     <Compile Include="Events\SCP3114Overhaul.cs" />
     <Compile Include="Events\SCPDamageAnnouncement.cs" />
+    <Compile Include="Features\079Removal.cs" />
+    <Compile Include="Features\BetterDisarming.cs" />
     <Compile Include="Features\Dummy.cs" />
     <Compile Include="Features\SCPSwap.cs" />
     <Compile Include="Events\SurfaceLightingFix.cs" />

@@ -32,21 +32,5 @@ namespace CustomCommands.Events
 				});
 			}
 		}
-
-		[PluginEvent(ServerEventType.PlayerDamage)]
-		public bool PlayerDamage(PlayerDamageEvent args)
-		{
-			if (args.DamageHandler is AttackerDamageHandler adh)
-			{
-				if (args.Player.Role == RoleTypeId.Tutorial)
-				{
-					if (adh is SnowballDamageHandler)
-					{
-						return false;
-					}
-				}
-			}
-			return true;
-		}
 	}
 }

@@ -44,12 +44,15 @@ namespace CustomCommands
 			EventManager.RegisterEvents<EventEffects>(this);
 			EventManager.RegisterEvents<LateJoin>(this);
 			EventManager.RegisterEvents<NameFix>(this);
-			EventManager.RegisterEvents<SCPDamageAnnouncement>(this);
-			EventManager.RegisterEvents<Features.SCPSwap>(this);
+			EventManager.RegisterEvents<SCPDamageAnnouncement>(this);		
 			EventManager.RegisterEvents<SurfaceLightingFix>(this);
 			EventManager.RegisterEvents<TutorialFixes>(this);
+
+			EventManager.RegisterEvents<Features.DummyEvents>(this);
 			EventManager.RegisterEvents<Features.Voting>(this);
+			EventManager.RegisterEvents<Features.SCPSwap>(this);
 			EventManager.RegisterEvents<Features.SpecialWeapons>(this);
+			EventManager.RegisterEvents<Features._079Removal>(this);
 			//EventManager.RegisterEvents<SCP3114Overhaul>(this);
 
 			RagdollManager.OnRagdollSpawned += MiscEvents.RagdollManager_OnRagdollSpawned;

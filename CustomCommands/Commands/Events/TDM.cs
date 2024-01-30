@@ -56,23 +56,15 @@ namespace CustomCommands.Commands.Events
 				index++;
 				if (index % 2 == 0)
 				{
-					plr.SetRole(PlayerRoles.RoleTypeId.Flamingo);
+					plr.SetRole(PlayerRoles.RoleTypeId.NtfCaptain);
 					plr.Position = new Vector3(room914.ApiRoom.Position.x, room914.ApiRoom.Position.y + 1, room914.ApiRoom.Position.z);
-					plr.SendBroadcast("The door will open in 10 seconds. Kill them all", 10, shouldClearPrevious: true);
-
-					//plr.SetRole(PlayerRoles.RoleTypeId.NtfCaptain);
-					//plr.Position = new Vector3(room914.ApiRoom.Position.x, room914.ApiRoom.Position.y + 1, room914.ApiRoom.Position.z);
-					//plr.SendBroadcast("The door will open in 10 seconds. Kill all chaos", 10, shouldClearPrevious: true);
+					plr.SendBroadcast("The door will open in 10 seconds. Kill all chaos", 10, shouldClearPrevious: true);
 				}
 				else
 				{
-					plr.SetRole(PlayerRoles.RoleTypeId.ZombieFlamingo);
+					plr.SetRole(PlayerRoles.RoleTypeId.ChaosMarauder);
 					plr.Position = new Vector3(room330.ApiRoom.Position.x, room330.ApiRoom.Position.y + 1, room330.ApiRoom.Position.z);
-					plr.SendBroadcast("The door will open in 10 seconds. Kill them all", 10, shouldClearPrevious: true);
-
-					//plr.SetRole(PlayerRoles.RoleTypeId.ChaosMarauder);
-					//plr.Position = new Vector3(room330.ApiRoom.Position.x, room330.ApiRoom.Position.y + 1, room330.ApiRoom.Position.z);
-					//plr.SendBroadcast("The door will open in 10 seconds. Kill all MTF", 10, shouldClearPrevious: true);
+					plr.SendBroadcast("The door will open in 10 seconds. Kill all MTF", 10, shouldClearPrevious: true);
 				}
 
 				MEC.Timing.CallDelayed(10, () =>

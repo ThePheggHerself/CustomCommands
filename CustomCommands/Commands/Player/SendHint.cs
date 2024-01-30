@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 
-namespace CustomCommands.Features
+namespace CustomCommands.Commands
 {
     public class SendHint
     {

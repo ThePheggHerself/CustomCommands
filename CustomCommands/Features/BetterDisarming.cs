@@ -34,14 +34,14 @@ namespace CustomCommands.Features
 			if (!args.Target.TemporaryData.Contains("cuffTokens"))
 			{
 				if (args.Target.Role == RoleTypeId.ClassD)
-					Respawn.AddTickets(Respawning.SpawnableTeamType.NineTailedFox, 0.5f);
+					Respawn.AddTickets(Respawning.SpawnableTeamType.NineTailedFox, 0.2f);
 				else if (args.Target.Role == RoleTypeId.Scientist)
-					Respawn.AddTickets(Respawning.SpawnableTeamType.ChaosInsurgency, 0.5f);
+					Respawn.AddTickets(Respawning.SpawnableTeamType.ChaosInsurgency, 0.2f);
 
 				args.Target.TemporaryData.Add("cuffTokens", string.Empty);
 			}
 
-			if (args.Target.Zone != MapGeneration.FacilityZone.Surface)
+			if (args.Target.Zone != FacilityZone.Surface)
 			{
 				if (args.Target.TemporaryData.Contains("cuffedBy"))
 					args.Target.TemporaryData.Remove("cuffedBy");

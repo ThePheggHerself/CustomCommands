@@ -1,20 +1,28 @@
-﻿using MapGeneration;
+﻿using CustomPlayerEffects;
+using HarmonyLib;
+using MapGeneration;
 using MEC;
 using Mirror;
 using PlayerRoles;
 using PlayerRoles.PlayableScps.Scp3114;
 using PlayerRoles.Ragdolls;
+using PlayerRoles.RoleAssign;
+using PlayerStatsSystem;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
 using PluginAPI.Events;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Utils.Networking;
 
 namespace CustomCommands.Events
 {
 	public class SCP3114Overhaul
 	{
-		[PluginEvent(ServerEventType.PlayerSpawn)]
+		[PluginEvent]
 		public void PlayerSpawn(PlayerSpawnEvent args)
 		{
 			if (args.Player.Role == RoleTypeId.Scp3114)
@@ -29,11 +37,16 @@ namespace CustomCommands.Events
 					var scpid = (args.Player.RoleBase as Scp3114Role);
 					scpid.FpcModule.MouseLook.CurrentHorizontal = rot;
 				});
+			}
+		}
 
-				//Timing.CallDelayed(45f, () =>
-				//{
+		[PluginEvent]
+		public void PlayerDamaged(PlayerDamageEvent args)
+		{
+			if(args.DamageHandler is Scp3114DamageHandler sDH && sDH.Subtype == Scp3114DamageHandler.HandlerType.Slap)
+			{
+				args.Target.EffectsManager.EnableEffect<Hemorrhage>(10);
 
-				//})
 			}
 		}
 
@@ -61,4 +74,36 @@ namespace CustomCommands.Events
 			return humanRole;
 		}
 	}
+
+	[HarmonyPatch(typeof(Scp3114Reveal))]
+	[HarmonyPatch("ServerProcessCmd")]
+	public class Scp3114RevealPatchClass
+	{
+		[HarmonyPrefix]
+		public static bool prefix(Scp3114Reveal __instance)
+		{
+			if (Round.Duration < TimeSpan.FromSeconds(60))
+			{
+				Player.Get(__instance.Owner).ReceiveHint("You cannot yet undisguise");
+				return false;
+			}
+			else return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(Scp3114Strangle))]
+	[HarmonyPatch("ValidateTarget")]
+	public class Scp3114StranglePatchClass
+	{
+		[HarmonyPostfix]
+		public static void postfix(Scp3114Strangle __instance, ref bool __result, ReferenceHub player)
+		{
+			if (player.playerStats.GetModule<HealthStat>().CurValue < 60)
+			{
+				Player.Get(__instance.Owner).ReceiveHint("They are still too strong to strangle");
+				__result = false;
+			}
+		}
+	}
+
 }

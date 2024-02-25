@@ -1,8 +1,10 @@
 ﻿using CustomCommands.Events;
+using HarmonyLib;
 using PlayerRoles.Ragdolls;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Events;
+using System;
 
 namespace CustomCommands
 {
@@ -37,10 +39,13 @@ namespace CustomCommands
 		[PluginEntryPoint("Custom Commands", "1.0.0", "Simple plugin for custom commands", "ThePheggHerself")]
 		public void OnPluginStart()
 		{
+			Harmony harmony = new Harmony("CC-Patching-Phegg");
+			harmony.PatchAll();
+
 			Log.Info($"Plugin is loading...");
 
-			EventManager.RegisterEvents<DebugTests>(this);
-			EventManager.RegisterEvents<DoorLocking>(this);
+			//EventManager.RegisterEvents<DebugTests>(this);
+			EventManager.RegisterEvents<Commands.Player.PlayerDoorControlEvents>(this);
 			EventManager.RegisterEvents<EventEffects>(this);
 			EventManager.RegisterEvents<LateJoin>(this);
 			EventManager.RegisterEvents<NameFix>(this);
@@ -51,9 +56,11 @@ namespace CustomCommands
 			EventManager.RegisterEvents<Features.DummyEvents>(this);
 			EventManager.RegisterEvents<Features.Voting>(this);
 			EventManager.RegisterEvents<Features.SCPSwap>(this);
+			
+			EventManager.RegisterEvents<Features._079Removal>(this);
+			EventManager.RegisterEvents<SCP3114Overhaul>(this);
+
 			//EventManager.RegisterEvents<Features.SpecialWeapons>(this);
-			//EventManager.RegisterEvents<Features._079Removal>(this);
-			//EventManager.RegisterEvents<SCP3114Overhaul>(this);
 
 			RagdollManager.OnRagdollSpawned += MiscEvents.RagdollManager_OnRagdollSpawned;
 		}

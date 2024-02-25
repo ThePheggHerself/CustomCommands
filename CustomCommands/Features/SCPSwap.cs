@@ -168,8 +168,8 @@ namespace CustomCommands.Features
 
 				swapper.ReceiveHint($"{player.Nickname} accepted your swap request", 5);
 
-				player.SetRole(swapperSCP, RoleChangeReason.RemoteAdmin);
-				swapper.SetRole(playerSCP, RoleChangeReason.RemoteAdmin);
+				player.SetRole(swapperSCP, RoleChangeReason.LateJoin);
+				swapper.SetRole(playerSCP, RoleChangeReason.LateJoin);
 
 				player.TemporaryData.Remove("swapRequestRecieved");
 				swapper.TemporaryData.Remove("swapRequestSent");

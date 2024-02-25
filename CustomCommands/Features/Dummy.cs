@@ -74,7 +74,7 @@ namespace CustomCommands.Features
 
 	public class DummyEvents
 	{
-		//[PluginAPI.Core.Attributes.PluginEvent]
+		[PluginAPI.Core.Attributes.PluginEvent]
 		public void WaitingForPlayers(WaitingForPlayersEvent args)
 		{
 			DummyManager.DummyID = 0;
